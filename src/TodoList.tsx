@@ -7,8 +7,6 @@ function TodoList() {
     id: number,
     title: string,
     isComplete: boolean
-
-
   }
 
   //initial data which will be stored in todo-list
@@ -35,7 +33,7 @@ function TodoList() {
       setInputValue('');
     }
     else
-    alert("empty task cannot be added")
+      alert("empty task cannot be added")
   }
   const handleDelete = (todo: ITodo) => {
     todos.splice(todos.indexOf(todo), 1);

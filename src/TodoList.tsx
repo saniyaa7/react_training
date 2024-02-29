@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 
 function TodoList() {
@@ -9,14 +9,21 @@ function TodoList() {
     isComplete: boolean
   }
 
-  //initial data which will be stored in todo-list
-  const initialData: ITodo[] = [
-    { id: 1, title: "todays taks", isComplete: true },
-    { id: 2, title: "Assignment", isComplete: true }
+  //fetching data 
 
-  ]
+  const getData = () => {
+    fetch("http://localhost:3060/todos")
+      .then((response) => response.json())
+      .then((result: ITodo[]) => setTodos(result)) // Set the result type to ITodo[]
+      .catch((error) => console.log("error", error));
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
   //stroring todo-list of type ITodo
-  const [todos, setTodos] = useState<ITodo[]>(initialData);
+  const [todos, setTodos] = useState<ITodo[]>([]);
   //storing value for input
   const [inputValue, setInputValue] = useState('');
   //storing status of show completed task check box

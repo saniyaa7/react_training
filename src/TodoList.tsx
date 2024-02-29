@@ -19,6 +19,11 @@ setTodos([...todos, inputValue]);
 
 
 }
+const handleDelete = (index:any) => {
+  const newTodos = [...todos];
+  newTodos.splice(index, 1);
+  setTodos(newTodos);
+};
 
   return(<div>
     <form>
@@ -26,14 +31,14 @@ setTodos([...todos, inputValue]);
       <button onClick={handleSubmit}>Add Todo</button>
     </form>
     <ul>
-        {todos.map((todo) => (
-        
-          <li key={todo}>{todo}
-           <button>Delete</button>
+        {todos.map((todo, index) => (
+          <li key={index}>{todo}
+          <button onClick={() =>handleDelete(index)}>Delete</button>
           </li>
         ))}
       </ul>
-  </div>);
+    </div>
+  )
 
 }
 export default TodoList;

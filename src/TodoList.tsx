@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from "react";
+import useFetch from "./useFetch";
+
+export interface ITodo {
+  id: number,
+  title: string,
+  isComplete: boolean
+}
 
 
 function TodoList() {
   //interface created for todo list
-  interface ITodo {
-    id: number,
-    title: string,
-    isComplete: boolean
-  }
 
-  //fetching data 
-
-  const getData = () => {
-    fetch("http://localhost:3060/todos")
-      .then((response) => response.json())
-      .then((result: ITodo[]) => setTodos(result)) // Set the result type to ITodo[]
-      .catch((error) => console.log("error", error));
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
+  //fetching data  
+  
   //stroring todo-list of type ITodo
   const [todos, setTodos] = useState<ITodo[]>([]);
   //storing value for input
   const [inputValue, setInputValue] = useState('');
   //storing status of show completed task check box
   const [status, setStatus] = useState(false);
+
+  const [data,error]= useFetch();
+  console.log(data,error)
 
   function handleChange(e: any) {
     console.log(e.target.value)
@@ -47,15 +41,18 @@ function TodoList() {
     setTodos([...todos]);
   };
 
+  useEffect(()=>setTodos(data),[]);
 
-
-  return (<div>
+  return (<div style={{ backgroundColor: "lightgray", padding: "20px",  maxWidth: "600px", margin: "auto" }}>
     {/* taking input */}
+    
+    {/* setTodos(data); */}
+    <h1>Todo-List</h1>
 
-    <form>
+    <form >
       <input type="text" value={inputValue} onChange={handleChange} />
-      <button onClick={handleSubmit}>Add Todo</button>
-    </form>
+      <button onClick={handleSubmit} style={{color:"white",backgroundColor:"green"}}>Add Todo</button>
+    </form> 
 
     <label>
       <input type="checkbox" onChange={() => setStatus(!status)} />
@@ -67,9 +64,7 @@ function TodoList() {
       {todos.map((todo: ITodo, index: number) => (
         <div key={index}>
           {(!status || (status && todo.isComplete)) && (
-            <>
-              {todo.title}
-              <button onClick={() => handleDelete(todo)}>Delete</button>
+            <div style={{color:"black"}}>
               <input
                 type="checkbox"
                 onChange={() => {
@@ -79,7 +74,10 @@ function TodoList() {
                 }}
                 checked={todo.isComplete}
               />
-            </>
+              <span  style={{ flexGrow: 1, textDecoration: todo.isComplete ? "line-through" : "none" }}>{todo.title}</span>
+              <button onClick={() => handleDelete(todo)} style={{backgroundColor:"red",color:"white"}}>Delete</button>
+              
+            </div>
           )}
         </div>
       ))}

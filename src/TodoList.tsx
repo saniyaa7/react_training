@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import useFetch from "./useFetch";
 import { Button, Col, InputGroup, ListGroup, Row } from "react-bootstrap";
 import AddTodo from "./AddTodo";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Input from "postcss/lib/input";
 
 export interface ITodo {
@@ -86,9 +86,13 @@ function TodoList() {
                 
                 }>
                 </InputGroup.Checkbox>
-                <ListGroup.Item  style={{ width: 400 }}>
-                  {todo.title}
-                </ListGroup.Item>
+                <Link key={todo.id} to={`/todo-add/${todo.id}`}>
+            <ListGroup.Item
+              style={{ width: 400 }}
+            >
+              {todo.title}
+            </ListGroup.Item>
+          </Link>
                 <Button variant="danger" size="sm" onClick={()=>deleteTodo(todo)}>DELETE</Button>
               </InputGroup>
             </Row>)

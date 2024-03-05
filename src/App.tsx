@@ -6,6 +6,7 @@ import MyNavbar from './MyNavbar';
 import AddTodo from './AddTodo';
 import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import DisplayTodo from './DisplayTodo';
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
       <Routes>
         <Route path='/' element={<TodoList/>}> </Route>
         <Route path='/todo-add' element={<AddTodo/>}></Route>
+        <Route path='/todo-add/:id' element={<DisplayTodo/>}></Route>
         
       </Routes>
       </BrowserRouter>

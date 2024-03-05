@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Button, Col, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
+import { Button, Col, Form, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "./constants";
 
@@ -7,6 +7,7 @@ export interface ITodo {
   id: string,
   title: string,
   content: string,
+  dueDate:string,
   isComplete: boolean
 }
 function AddTodo() {
@@ -15,6 +16,7 @@ function AddTodo() {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [newTitle, setNewTitle] = useState<string>('');
   const [newContent, setNewContent] = useState<string>('');
+  const [newDueDate, setNewDueDate] = useState<string>('');
   const [nextId, setNextId] = useState<number>(todos.length + 1)
 
   
@@ -39,12 +41,18 @@ function AddTodo() {
     setNewContent(e.target.value)
 
   }
+  function handleChangeDate(e:any)
+    {
+      setNewDueDate(e.target.value)
+    }
   function handleSubmit(e: any) {
     e.preventDefault();
     if (newTitle.length === 0) {
       alert("title cannot be empty");
       return;
     }
+
+    
 
     // const id=todos.length;
     // const title :any=newTitle.trim();
@@ -54,6 +62,7 @@ function AddTodo() {
       id: nextId.toString(),
       content: newContent,
       title: newTitle,
+      dueDate:newDueDate,
       isComplete: false
 
     }
@@ -76,30 +85,46 @@ function AddTodo() {
   return (<div>
     <Row className="justify-content-center mt-4">
       <Col md={6}>
-
-        <InputGroup>
-
+    <Form>
+        <Form.Group>
+        <Form.Label>Title</Form.Label>
           <FormControl
             type="text"
-            placeholder="Add title"
+            placeholder="Enter title"
             value={newTitle}
             onChange={handleChangeTitle}
           />
-        </InputGroup>
+        </Form.Group>
         <br />
+        <Form.Group>
+        <Form.Label>Content</Form.Label>
         <FormControl
           as="textarea"
-          placeholder="Add Content"
+          placeholder="Enter Content"
           value={newContent}
           onChange={handleChangeContent}
-        />
+        /></Form.Group>
+          <br />
+        <Form.Group>
+        <Form.Label>Due Date</Form.Label>
+          <FormControl
+            type="date"
+            placeholder="Enter date"
+            value={newDueDate}
+            onChange={handleChangeDate}
+          />
+        </Form.Group>
         <br />
+        <Form.Group></Form.Group>
+        <br />
+        <Form.Group>
         <div className="d-flex justify-content-center">
           <Button variant="success" onClick={handleSubmit}>
             Add Task
           </Button>
         </div>
-
+        </Form.Group>
+        </Form>
       </Col>
     </Row>
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import useFetch from "./useFetch";
-import { Button, Col, InputGroup, ListGroup, Row } from "react-bootstrap";
+import { Button, Col, Form, InputGroup, ListGroup, Row } from "react-bootstrap";
 import AddTodo from "./AddTodo";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "postcss/lib/input";
@@ -66,8 +66,7 @@ function TodoList() {
 
   return (<div  className="App">
     <h1 className="justify-content-center mt-4">Todo-List</h1>
-    <Button variant="primary" size="sm" onClick={() => navigate('/todo-add')} className="mt-3 mx-auto"
-        style={{ width: "200px" }}>Add Todo</Button> <br/>
+     <br/>
         <Button variant="primary" size="sm"  className="mt-3 mx-auto"
         style={{ width: "200px" } } onClick={()=>{
           (setStatus(!status))
@@ -86,6 +85,8 @@ function TodoList() {
                 
                 }>
                 </InputGroup.Checkbox>
+              
+
                 <Link key={todo.id} to={`/todo-add/${todo.id}`}>
             <ListGroup.Item
               style={{ width: 400 }}

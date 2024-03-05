@@ -13,6 +13,7 @@ function App() {
     <div>
     
       <BrowserRouter>
+      <MyNavbar/>
       <Routes>
         <Route path='/' element={<TodoList/>}> </Route>
         <Route path='/todo-add' element={<AddTodo/>}></Route>

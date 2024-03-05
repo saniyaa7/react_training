@@ -2,32 +2,9 @@
   "todos": [
     {
       "id": "1",
-      "content": "",
-      "title": "Saniya",
-      "isComplete": true
-    },
-    {
-      "id": "2",
-      "content": "sadxwed",
-      "title": "xyz",
-      "isComplete": false
-    },
-    {
-      "id": "3",
-      "content": "sdwed2e2dew",
-      "title": "Learn JS",
-      "isComplete": true
-    },
-    {
-      "id": "4",
-      "content": "",
-      "title": "tfg",
-      "isComplete": true
-    },
-    {
-      "id": "5",
-      "content": "",
-      "title": "rsfgcdscg",
+      "content": "from Namaste Javascript",
+      "title": "learn Javascript",
+      "dueDate": "2024-03-06",
       "isComplete": false
     }
   ]

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button, Col, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
+import { API_ENDPOINT } from "./constants";
 
 export interface ITodo {
   id: string,
@@ -20,7 +21,7 @@ function AddTodo() {
   const [status, setStatus] = useState(false);
 
   useEffect(() => {
-    fetch('http://localhost:8000/todos')
+    fetch(API_ENDPOINT)
       .then(res => res.json())
       .then((data: ITodo[]) => {
         setTodos(data)
@@ -56,7 +57,7 @@ function AddTodo() {
       isComplete: false
 
     }
-    fetch('http://localhost:8000/todos', {
+    fetch(API_ENDPOINT, {
       method: "POST",
       body: JSON.stringify(payload),
       headers: { 'Content-type': "application/json; charset=UTF-8" }

@@ -1,7 +1,6 @@
 import { useEffect,useState } from "react";
-import { ITodo } from "./TodoList";
+import { ITodo } from "../component/TodoList";
 
-const url="http://localhost:3060/todos";
 let err="";
 function useFetch(): [ITodo[], string]
 {
@@ -9,13 +8,14 @@ function useFetch(): [ITodo[], string]
   const [response,setResponse]=useState<ITodo[]>([]);
 
   useEffect(()=>{
-    fetch("http://localhost:8000/todos")
+    fetch("http://localhost:3060/todos")
     .then((response) => { return response.json();
       // setResponse(data);
-    //  console.log(data);
+    
     })
     .then((result)=>{const data=result;
-      setResponse(data);})
+      setResponse(data);
+    })
     
     .catch((error) => err=error);
 

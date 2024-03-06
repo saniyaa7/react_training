@@ -37,7 +37,7 @@ function TodoList() {
         title: inputValue,
         isComplete: false,
       };
-
+//add todo in todo-list
       setTodos([...todos, todoItem]);
       setInputValue('');
     }
@@ -48,7 +48,7 @@ function TodoList() {
     todos.splice(todos.indexOf(todo), 1);
     setTodos([...todos]);
   };
-
+//fetch data using json-serverand set that data to todo-list
   useEffect(() => setTodos(data), [data]);
 
   return (<div style={{ backgroundColor: "lightgray", padding: "20px", maxWidth: "600px", margin: "auto" }}>

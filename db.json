@@ -2,9 +2,16 @@
   "todos": [
     {
       "id": "1",
-      "content": "from Namaste Javascript",
-      "title": "learn Javascript",
-      "dueDate": "2024-03-06",
+      "content": "from namaste javascript",
+      "title": "Learn Javascript",
+      "dueDate": "2024-03-07",
+      "isComplete": false
+    },
+    {
+      "id": "2",
+      "content": "",
+      "title": "scsa",
+      "dueDate": "",
       "isComplete": false
     }
   ]

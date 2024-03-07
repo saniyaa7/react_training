@@ -22,7 +22,6 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .then(res => res.json())
       .then(data => setTodos(data))
       .catch(error => console.error('Error:', error));
-
   }
 
   useEffect(() => {
@@ -72,6 +71,14 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .then(data => console.log(data))
       .catch(error => console.error('Error:', error));
   };
+  const currentDate = new Date();
+  const expiredTodos = todos.filter(todo => {
+    const dueDate = new Date(todo.dueDate); // Assuming your todo object has a dueDate property
+
+    // Display the task only if the due date has expired
+    console.log(dueDate.getTime() < currentDate.getTime(),!isNaN(dueDate.getTime()) );
+    return !isNaN(dueDate.getTime()) && dueDate.getTime() > currentDate.getTime();
+  });
 
 
   return (
@@ -83,7 +90,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
         </tr>
       </thead>
       <tbody>
-        {todos.map((todo) => (
+        {expiredTodos.map((todo) => (
           <tr key={todo.id}>
             <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
             {showButton && <>

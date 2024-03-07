@@ -7,8 +7,9 @@ function MyNavbar()
        <Navbar bg="secondary" data-bs-theme="dark">
         <Container>
         <Nav className="me-auto">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/todo-add">Add Task</Nav.Link></Nav>
+            <Nav.Link href="/">HOME</Nav.Link>
+            <Nav.Link href="/todo-add">ADD TASK</Nav.Link>
+            <Nav.Link href="/complete-task">COMPLETED TASK</Nav.Link></Nav>
           
           
         </Container>

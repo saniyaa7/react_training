@@ -1,15 +1,9 @@
 import { useEffect, useState } from "react";
 import { Button, Col, Form, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
-import { API_ENDPOINT } from "./constants";
+import { API_ENDPOINT } from "../constants";
+import Home, { ITodo } from "../component/Home";
 
-export interface ITodo {
-  id: string,
-  title: string,
-  content: string,
-  dueDate:string,
-  isComplete: boolean
-}
 function AddTodo() {
   
   const navigate=useNavigate();
@@ -18,8 +12,6 @@ function AddTodo() {
   const [newContent, setNewContent] = useState<string>('');
   const [newDueDate, setNewDueDate] = useState<string>('');
   const [nextId, setNextId] = useState<number>(todos.length + 1)
-
-  
   const [status, setStatus] = useState(false);
 
   useEffect(() => {
@@ -52,12 +44,6 @@ function AddTodo() {
       return;
     }
 
-    
-
-    // const id=todos.length;
-    // const title :any=newTitle.trim();
-    // const content=newContent.trim();
-    // setNextId(initialData.length);
     const payload: ITodo = {
       id: nextId.toString(),
       content: newContent,

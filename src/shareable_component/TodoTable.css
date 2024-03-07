@@ -1,0 +1,65 @@
+/* TodoTable.css */
+
+.todo-table {
+  width: 60% !important;
+  margin: auto;
+  margin-top: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.todo-table th,
+.todo-table td {
+  text-align: left;
+  padding: 10px;
+  color: black !important; /* Set default text color */
+}
+
+.todo-table th {
+  background-color: #007bff;
+  color: white;
+  font-weight: bold;
+}
+
+.todo-table td {
+  border-bottom: 1px solid #dee2e6;
+  transition: background-color 0.3s, color 0.3s; /* Add transition effect */
+}
+
+.todo-table tbody tr:hover {
+  background-color: #e9ecef; /* Change background color on hover */
+}
+
+.todo-table tbody tr:hover td {
+  color: #007bff; /* Change text color on hover */
+}
+
+.todo-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.todo-link:hover {
+  text-decoration: underline;
+}
+
+.todo-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.todo-status-btn {
+  margin-top: 5px;
+}
+
+.completed-btn {
+  background-color: #28a745;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}

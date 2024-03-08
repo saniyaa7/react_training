@@ -44,17 +44,10 @@ function AddTodo() {
       return;
     }
 
-    const payload: ITodo = {
-      id: nextId.toString(),
-      content: newContent,
-      title: newTitle,
-      dueDate:newDueDate,
-      isComplete: false
 
-    }
     fetch(API_ENDPOINT, {
       method: "POST",
-      body: JSON.stringify(payload),
+      body: JSON.stringify({newContent, newTitle, newDueDate, isComplete:false}),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
 
     })

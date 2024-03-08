@@ -1,32 +1,11 @@
 {
   "todos": [
     {
-      "id": "2",
-      "content": "X",
-      "title": "cxvx",
-      "dueDate": "",
-      "isComplete": false
-    },
-    {
-      "id": "2",
-      "content": "From Youtube",
-      "title": "Learn Javascript",
-      "dueDate": "2024-03-08",
-      "isComplete": false
-    },
-    {
-      "id": "3",
-      "content": "From documentation",
-      "title": "Learn React",
-      "dueDate": "2024-04-06",
-      "isComplete": false
-    },
-    {
-      "id": "4",
+      "title": "dxzc ",
       "content": "",
-      "title": "Learn ROR",
-      "dueDate": "2024-03-29",
-      "isComplete": false
+      "dueDate": "2024-03-15",
+      "isComplete": true,
+      "id": "f9dd"
     }
   ]
 }

@@ -20,7 +20,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   function FetchData(apiUrl: any) {
     fetch(apiUrl)
       .then(res => res.json())
-      .then(data => setTodos(data))
+      .then(data =>{
+        setTodos(data)
+        console.log(todos)
+      })
       .catch(error => console.error('Error:', error));
   }
 
@@ -32,7 +35,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     }
 
     FetchData(apiUrl);
-  }, [completeTask]);
+  }, [completeTask,]);
 
   const deleteTodo = (todo: ITodo) => {
     fetch(API_ENDPOINT + '/' + todo.id, {
@@ -55,11 +58,11 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     });
 
     setTodos(updatedTodos);
-
+    
 
     fetch(API_ENDPOINT + '/' + todo.id, {
       method: "PUT",
-      body: JSON.stringify({ title: todo.title, content: todo.content, isComplete: todo.isComplete }), // Send only the updated isComplete value
+      body: JSON.stringify({ title: todo.title, content: todo.content, dueDate:todo.dueDate,isComplete: todo.isComplete }), // Send only the updated isComplete value
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -72,14 +75,16 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .catch(error => console.error('Error:', error));
   };
   const currentDate = new Date();
+
   const expiredTodos = todos.filter(todo => {
     const dueDate = new Date(todo.dueDate); // Assuming your todo object has a dueDate property
 
     // Display the task only if the due date has expired
-    console.log(dueDate.getTime() < currentDate.getTime(),!isNaN(dueDate.getTime()) );
+  
     return !isNaN(dueDate.getTime()) && dueDate.getTime() > currentDate.getTime();
   });
-
+  console.log(" todos",todos)
+console.log("Expired todos",expiredTodos)
 
   return (
     <Table striped bordered hover className="todo-table">

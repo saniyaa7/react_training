@@ -1,9 +1,9 @@
 // TodoTable.js
 import React, { useEffect, useState } from "react";
-import { Button, Table } from "react-bootstrap";
+import { Button, Form, FormControl, InputGroup, Table } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Home, { ITodo } from "../component/Home";
-import "./TodoTable.css"; 
+import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
 
 interface TodoTableProps {
@@ -14,21 +14,21 @@ interface TodoTableProps {
 
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
-  const [status, setStatus] = useState(false);
+  const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   function FetchData(apiUrl: any) {
     fetch(apiUrl)
       .then(res => res.json())
-      .then(data =>{
+      .then(data => {
         setTodos(data)
-        console.log(todos)
+        console.log("data: ", data)
       })
       .catch(error => console.error('Error:', error));
   }
 
   useEffect(() => {
-    let apiUrl = API_ENDPOINT;
+    let apiUrl = API_ENDPOINT + 'todos';
 
     if (completeTask) {
       apiUrl += '?isComplete=1';
@@ -38,12 +38,12 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   }, [completeTask,]);
 
   const deleteTodo = (todo: ITodo) => {
-    fetch(API_ENDPOINT + '/' + todo.id, {
+    fetch(API_ENDPOINT + 'todos/' + todo.id, {
       method: "DELETE",
     })
       .then(res => res.json())
       .then(data => {
-        FetchData(API_ENDPOINT);
+        FetchData(API_ENDPOINT + 'todos');
       })
       .catch(error => console.error('Error:', error));
   };
@@ -58,11 +58,11 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     });
 
     setTodos(updatedTodos);
-    
 
-    fetch(API_ENDPOINT + '/' + todo.id, {
+
+    fetch(API_ENDPOINT + 'todos/' + todo.id, {
       method: "PUT",
-      body: JSON.stringify({ title: todo.title, content: todo.content, dueDate:todo.dueDate,isComplete: todo.isComplete }), // Send only the updated isComplete value
+      body: JSON.stringify({ title: todo.title, content: todo.content, dueDate: todo.dueDate, isComplete: todo.isComplete }), // Send only the updated isComplete value
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -71,43 +71,48 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => console.log("update:", data))
       .catch(error => console.error('Error:', error));
   };
   const currentDate = new Date();
 
   const expiredTodos = todos.filter(todo => {
-    const dueDate = new Date(todo.dueDate); // Assuming your todo object has a dueDate property
-
-    // Display the task only if the due date has expired
-  
-    return !isNaN(dueDate.getTime()) && dueDate.getTime() > currentDate.getTime();
+    const dueDate = new Date(todo.dueDate);
+    console.log(dueDate.getTime(), dueDate.getTime() > currentDate.getTime())
+    return !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime();
   });
-  console.log(" todos",todos)
-console.log("Expired todos",expiredTodos)
+
 
   return (
-    <Table striped bordered hover className="todo-table">
-      <thead style={{ width: "60%" }}>
-        <tr>
-          <th>Title</th>
-          {showButton && <><th style={{ width: "25%" }}>Action</th><th style={{ width: "25%" }}>Status</th></>}
-        </tr>
-      </thead>
-      <tbody>
-        {expiredTodos.map((todo) => (
-          <tr key={todo.id}>
-            <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
-            {showButton && <>
-              <td ><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)} >DELETE</Button></td>
-              <td ><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"} >
-                {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
-              </Button></td>
-            </>}
+    <><Form>
+      <InputGroup className="w-50 mx-auto my-3">
+        <FormControl placeholder="Search list" onChange={(e) => setSearch(e.target.value)} className="custom-search-bar" />
+      </InputGroup>
+    </Form><Table striped bordered hover className="todo-table text-center">
+        <thead style={{ width: "60%" }}>
+          <tr>
+            <th>Title</th>
+            {showButton && <><th style={{ width: "25%" }}>Action</th><th style={{ width: "25%" }}>Status</th></>}
           </tr>
-        ))}
-      </tbody>
-    </Table>
+        </thead>
+        <tbody>
+          {expiredTodos.filter((item) => {
+            return search.toLocaleLowerCase() === ''
+              ? item : item.title.toLocaleLowerCase().includes(search)
+          })
+            .map((todo) => (
+              <tr key={todo.id}>
+                <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
+                {showButton && <>
+                  <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
+                  <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
+                    {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
+                  </Button></td>
+                </>}
+              </tr>
+            ))}
+        </tbody>
+      </Table></>
   );
 }
 

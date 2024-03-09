@@ -8,7 +8,7 @@ function DisplayTodo() {
   const [todo, setTodo] = useState<ITodo>({ id: "", title: "", content: "", dueDate: "", isComplete: false });
   const { id } = useParams();
   useEffect(() => {
-    fetch(API_ENDPOINT + '/' + id)
+    fetch(API_ENDPOINT + 'todos/' + id)
       .then(res => res.json())
       .then(data => setTodo(data))
 

@@ -10,26 +10,6 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.todo-table th,
-.todo-table td {
-  text-align: left;
-  padding: 10px;
-  color: black !important; /* Set default text color */
-}
-
-
-
-.todo-table td {
-  border-bottom: 1px solid #dee2e6 !important;
-  transition: background-color 0.3s, color 0.3s ; /* Add transition effect */
-}
-
-.todo-table tbody tr:hover {
-  background-color: #e9ecef; /* Change background color on hover */
-}
-
-
-
 .todo-link {
   color: #007bff;
   text-decoration: none;
@@ -39,6 +19,15 @@
   text-decoration: underline;
 }
 
+.custom-search-bar {
+  width: 60% !important;
+}
 
-
-
+table,
+thead,
+tr,
+tbody,
+th,
+td {
+  text-align: center !important;
+}

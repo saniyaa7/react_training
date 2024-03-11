@@ -8,12 +8,7 @@ export interface ITodo {
   isComplete: boolean
 }
 
-
 function TodoList() {
-
-
-
-
   //stroring todo-list of type ITodo
   const [todos, setTodos] = useState<ITodo[]>([]);
   //storing value for input
@@ -37,7 +32,7 @@ function TodoList() {
         title: inputValue,
         isComplete: false,
       };
-//add todo in todo-list
+      //add todo in todo-list
       setTodos([...todos, todoItem]);
       setInputValue('');
     }
@@ -45,10 +40,10 @@ function TodoList() {
       alert("empty task cannot be added")
   }
   const handleDelete = (todo: ITodo) => {
-    todos.splice(todos.indexOf(todo), 1);
-    setTodos([...todos]);
+    const filteredTodos = todos.filter((task) => task.id !== todo.id);
+    setTodos(filteredTodos);
   };
-//fetch data using json-serverand set that data to todo-list
+  //fetch data using json-serverand set that data to todo-list
   useEffect(() => setTodos(data), [data]);
 
   return (<div style={{ backgroundColor: "lightgray", padding: "20px", maxWidth: "600px", margin: "auto" }}>

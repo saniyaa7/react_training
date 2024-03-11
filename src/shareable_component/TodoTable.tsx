@@ -18,6 +18,7 @@ interface TodoTableProps {
 
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
+  const [status, setStatus] = useState('all');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
@@ -91,29 +92,54 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     else
       setTodos([...todos].sort((a, b) => b.title.localeCompare(a.title)));
   };
+  const todoStatus = (status: string, todo: ITodo) => (
+    (status === 'complete' && todo.isComplete) ||
+    (status === 'notComplete' && !todo.isComplete) ||
+    (status === 'all')
+  );
+
+  const displayData = (status: string) => (
+
+    <Table striped bordered hover className="todo-table text-center">
+      <thead>
+        <tr>
+          <th>Title</th>
+          {showButton && <><th style={{ width: "25%" }}>Action</th><th style={{ width: "25%" }}>Status</th></>}
+        </tr>
+      </thead>
+      <tbody>
+        {expiredTodos.filter((item) => {
+          return search.toLocaleLowerCase() === ''
+            ? item : item.title.toLocaleLowerCase().includes(search)
+        })
+          .map((todo) => (
+            <tr key={todo.id}>
+              {todoStatus(status, todo) && (
+                <>
+                  <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
+                  {showButton && <>
+                    <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
+                    <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
+                      {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
+                    </Button></td>
+                  </>}
+                </>
+              )}
+            </tr>
+          ))}
+      </tbody>
+    </Table>
+  );
   const handleStatus = (status: string) => {
-    // debugger
-    // console.log('todo -------------------------------', todos);
-    
-    let apiUrl = API_ENDPOINT + 'todos';
-
-    if (status==='complete') {
-      apiUrl += '?isComplete=1';
-    }
-    else if(status==='notComplete')
-    {
-      apiUrl += '?isComplete=0';
-    }
-    
-    FetchData(apiUrl);
-
+    setStatus(status);
+    // displayData(status) //no need to write displayData here
   }
+
 
 
   return (
     <>
       <div className="search-bar">
-
         <Row>
           <Col xs={12} md={6}>
             <InputGroup className="mb-3">
@@ -121,47 +147,25 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
             </InputGroup>
           </Col>
           <Col xs={12} md={3}>
-            <DropdownButton id="status-dropdown" title="Status" >
-            <Dropdown.Item onClick={()=>handleStatus('all')}>ALL</Dropdown.Item>
-              <Dropdown.Item onClick={()=>handleStatus('complete')}>COMPLETED</Dropdown.Item>
-              <Dropdown.Item onClick={()=>handleStatus('notComplete')}>INCOMPLETED</Dropdown.Item>
+            <DropdownButton id="status-dropdown" title="Status">
+              <Dropdown.Item onClick={() => handleStatus('all')}>ALL</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatus('complete')}>COMPLETED</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatus('notComplete')}>INCOMPLETED</Dropdown.Item>
             </DropdownButton>
           </Col>
           <Col xs={12} md={3}>
-            <DropdownButton id="sort-dropdown" title="Sort" >
+            <DropdownButton id="sort-dropdown" title="Sort">
               <Dropdown.Item onClick={handleSort('ascending')}>ASCENDING</Dropdown.Item>
               <Dropdown.Item onClick={handleSort('descending')}>DESCENDING</Dropdown.Item>
             </DropdownButton>
           </Col>
+        </Row>
 
-        </Row></div>
-      <Table striped bordered hover className="todo-table text-center">
-        <thead style={{ width: "60%" }}>
-          <tr>
-            <th>Title</th>
-            {showButton && <><th style={{ width: "25%" }}>Action</th><th style={{ width: "25%" }}>Status</th></>}
-          </tr>
-        </thead>
-        <tbody>
-          {expiredTodos.filter((item) => {
-            return search.toLocaleLowerCase() === ''
-              ? item : item.title.toLocaleLowerCase().includes(search)
-          })
-            .map((todo) => (
-              <tr key={todo.id}>
-                <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
-                {showButton && <>
-                  <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
-                  <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
-                    {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
-                  </Button></td>
-                </>}
-              </tr>
-            ))}
-        </tbody>
-      </Table>
+      </div>
+      {displayData(status)} {/* Corrected invocation */}
     </>
   );
+
 }
 
 export default TodoTable;

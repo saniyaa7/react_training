@@ -15,7 +15,6 @@ interface TodoTableProps {
   completeTask: boolean;
 }
 
-
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [status, setStatus] = useState('all');
@@ -54,17 +53,13 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   };
 
   const handleCheck = (todo: ITodo) => {
-
     const updatedTodos = todos.map((t) => {
       if (t.id === todo.id) {
         t.isComplete = !t.isComplete;
       }
       return t;
     });
-
     setTodos(updatedTodos);
-
-
     fetch(API_ENDPOINT + 'todos/' + todo.id, {
       method: "PUT",
       body: JSON.stringify({ title: todo.title, content: todo.content, dueDate: todo.dueDate, isComplete: todo.isComplete }), // Send only the updated isComplete value
@@ -79,24 +74,26 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .then(data => console.log("update:", data))
       .catch(error => console.error('Error:', error));
   };
-  const currentDate = new Date();
 
+  const currentDate = new Date();
   let expiredTodos = todos.filter(todo => {
     const dueDate = new Date(todo.dueDate);
     console.log(dueDate.getTime(), dueDate.getTime() > currentDate.getTime())
     return !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime();
   });
+
+  const filterTask = status === 'all' ? expiredTodos : expiredTodos.filter((todo: ITodo) => String(todo.isComplete) === status);
+  const serachFilter = filterTask.filter((item) => {
+    return search.toLocaleLowerCase() === ''
+      ? item : item.title.toLocaleLowerCase().includes(search)
+  })
+
   const handleSort = (direction: string) => () => {
     if (direction === 'ascending')
       setTodos([...todos].sort((a, b) => a.title.localeCompare(b.title)));
     else
       setTodos([...todos].sort((a, b) => b.title.localeCompare(a.title)));
   };
-  const todoStatus = (status: string, todo: ITodo) => (
-    (status === 'complete' && todo.isComplete) ||
-    (status === 'notComplete' && !todo.isComplete) ||
-    (status === 'all')
-  );
 
   const displayData = (status: string) => (
 
@@ -108,25 +105,20 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
         </tr>
       </thead>
       <tbody>
-        {expiredTodos.filter((item) => {
-          return search.toLocaleLowerCase() === ''
-            ? item : item.title.toLocaleLowerCase().includes(search)
-        })
-          .map((todo) => (
-            <tr key={todo.id}>
-              {todoStatus(status, todo) && (
-                <>
-                  <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
-                  {showButton && <>
-                    <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
-                    <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
-                      {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
-                    </Button></td>
-                  </>}
-                </>
-              )}
-            </tr>
-          ))}
+        {serachFilter.map((todo) => (
+          <tr key={todo.id}>
+            <>
+              <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
+              {showButton && <>
+                <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
+                <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
+                  {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
+                </Button></td>
+              </>}
+            </>
+
+          </tr>
+        ))}
       </tbody>
     </Table>
   );
@@ -134,8 +126,6 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     setStatus(status);
     // displayData(status) //no need to write displayData here
   }
-
-
 
   return (
     <>
@@ -149,8 +139,8 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
           <Col xs={12} md={3}>
             <DropdownButton id="status-dropdown" title="Status">
               <Dropdown.Item onClick={() => handleStatus('all')}>ALL</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatus('complete')}>COMPLETED</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatus('notComplete')}>INCOMPLETED</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatus('true')}>COMPLETED</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleStatus('false')}>INCOMPLETED</Dropdown.Item>
             </DropdownButton>
           </Col>
           <Col xs={12} md={3}>

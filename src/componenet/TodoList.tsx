@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import useFetch from "./useFetch";
+import useFetch from "../Hook/useFetch";
 import { Button, Col, InputGroup, ListGroup, Row } from "react-bootstrap";
 import AddTodo from "./AddTodo";
 import { Link, useNavigate } from "react-router-dom";
 import Input from "postcss/lib/input";
 
 export interface ITodo {
-  id: number,
+  id: string,
   title: string,
   content:string,
   isComplete: boolean
@@ -14,8 +14,8 @@ export interface ITodo {
 
 function TodoList() {
   const [todos, setTodos] = useState<ITodo[]>([]);
-  const [status, setStatus] = useState(false);
-  const [data, error] = useFetch();
+  const [status, setStatus] = useState<boolean>(false);
+  const {response:data,err: error,refetchData} = useFetch();
   const navigate = useNavigate();
   console.log(data, error)
 
@@ -25,19 +25,18 @@ function TodoList() {
   };
 
   useEffect(() => {
-    fetch('http://localhost:8000/todos')
-      .then(res => res.json())
-      .then(data => setTodos(data))
-  }, [])
+    if(data){
+      setTodos(data)
+    }
+  }, [data])
 
-  const handlecheck = (todo: ITodo) => {
-    const todoStatus = todo.isComplete;
-    todo.isComplete = !todoStatus;
-    setTodos([...todos]);
+  const handlecheck = (id:string,checked:boolean) => {
+    // const updatedList = todos.map((todo)=> todo.id ===id ? ({...todo,isComplete:checked}): todo)
+    // setTodos(updatedList);
   
-    fetch(`http://localhost:8000/todos/${todo.id}`, {
-      method: "PUT",
-      body: JSON.stringify(todo),
+    fetch(`http://localhost:8000/todos/${id}`, {
+      method: "PATCH",
+      body: JSON.stringify({isComplete:checked}),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -46,7 +45,9 @@ function TodoList() {
         }
         return res.json();
       })
-      .then(data => console.log(data))
+      .then(data => {
+        refetchData(true)
+        console.log(data)})
       .catch(error => console.error('Error:', error));
   };
 
@@ -59,11 +60,8 @@ function TodoList() {
     .then(res=>res.json())
     .then(data=>navigate('/'))
 
-    
   }
   
-
-
   return (<div  className="App">
     <h1 className="justify-content-center mt-4">Todo-List</h1>
     <Button variant="primary" size="sm" onClick={() => navigate('/todo-add')} className="mt-3 mx-auto"
@@ -78,11 +76,12 @@ function TodoList() {
 
     <ListGroup className="align-items-center">
       {
-        todos.map((todo) => (
-          <div>
+        todos.map((todo,key) => (
+          <div key={key}>
             {(!status ||(status && todo.isComplete))&&(  <Row className="justify-content-center mt-2">
               <InputGroup>
-                <InputGroup.Checkbox checked={todo.isComplete} onChange={() =>handlecheck(todo) 
+                <InputGroup.Checkbox checked={todo.isComplete} onChange={(e) =>{
+                  handlecheck(todo.id,e.target.checked) }
                 
                 }>
                 </InputGroup.Checkbox>

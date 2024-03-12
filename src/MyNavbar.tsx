@@ -4,12 +4,12 @@ import { Navbar ,Container,Nav} from "react-bootstrap";
 function MyNavbar()
 {
   return(<div>
-       <Navbar bg="primary" data-bs-theme="dark">
+       <Navbar bg="secondary" data-bs-theme="dark">
         <Container>
-          <Navbar.Brand href="/">Home</Navbar.Brand>
-          <Navbar.Brand href="/todo-add">Add Todo</Navbar.Brand>
-          <Navbar.Brand href="/">Navbar</Navbar.Brand>
-          
+        <Nav className="me-auto">
+            <Nav.Link href="/">HOME</Nav.Link>
+            <Nav.Link href="/todo-add">ADD TASK</Nav.Link>
+        </Nav>  
         </Container>
       </Navbar>
 

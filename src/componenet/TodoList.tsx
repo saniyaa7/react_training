@@ -19,11 +19,6 @@ function TodoList() {
   const navigate = useNavigate();
   console.log(data, error)
 
-  const handleDelete = (todo: ITodo) => {
-    todos.splice(todos.indexOf(todo), 1);
-    setTodos([...todos]);
-  };
-
   useEffect(() => {
     if(data){
       setTodos(data)
@@ -51,16 +46,15 @@ function TodoList() {
       .catch(error => console.error('Error:', error));
   };
 
-  const deleteTodo=(todo:ITodo)=>
-  {
-    fetch(`http://localhost:8000/todos/${todo.id}`,{
-      method:"DELETE",
+  const deleteTodo = async(id: string) => {
+    const filteredTasks = todos.filter((task) => task.id !== id);
+    setTodos(filteredTasks);
 
-    })
-    .then(res=>res.json())
-    .then(data=>navigate('/'))
-
-  }
+    await fetch(`http://localhost:8000/todos/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" }
+    });
+  };
   
   return (<div  className="App">
     <h1 className="justify-content-center mt-4">Todo-List</h1>
@@ -92,7 +86,7 @@ function TodoList() {
               {todo.title}
             </ListGroup.Item>
           </Link>
-                <Button variant="danger" size="sm" onClick={()=>deleteTodo(todo)}>DELETE</Button>
+                <Button variant="danger" size="sm" onClick={()=>deleteTodo(todo.id)}>DELETE</Button>
               </InputGroup>
             </Row>)
 

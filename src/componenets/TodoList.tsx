@@ -1,18 +1,17 @@
 import React, { useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 
+interface ITodo {
+  id: string,
+  title: string,
+  isComplete: boolean
+}
 
 function TodoList() {
-  //interface created for todo list
-  interface ITodo {
-    id: number,
-    title: string,
-    isComplete: boolean
-  }
-
-  //initial data which will be stored in todo-list
+  
   const initialData: ITodo[] = [
-    { id: 1, title: "todays taks", isComplete: true },
-    { id: 2, title: "Assignment", isComplete: true }
+    { id: uuidv4(), title: "todays taks", isComplete: true },
+    {  id: uuidv4(), title: "Assignment", isComplete: true }
 
   ]
   //stroring todo-list of type ITodo
@@ -29,15 +28,15 @@ function TodoList() {
   function handleSubmit(e: any) {
     e.preventDefault();
     if (inputValue.length > 0) {
-      setTodos([...todos, { id: 6, title: inputValue, isComplete: false }]);
+      setTodos([...todos, { id: uuidv4(), title: inputValue, isComplete: false }]);
       setInputValue('');
     }
     else
       alert("empty task cannot be added")
   }
-  const handleDelete = (todo: ITodo) => {
-    todos.splice(todos.indexOf(todo), 1);
-    setTodos([...todos]);
+  const handleDelete = (id: string) => {
+    const filteredTasks = todos.filter((task) => task.id !== id);
+    setTodos(filteredTasks);
   };
 
 
@@ -62,12 +61,11 @@ function TodoList() {
           {(!status || (status && todo.isComplete)) && (
             <>
               {todo.title}
-              <button onClick={() => handleDelete(todo)}>Delete</button>
+              <button onClick={() => handleDelete(todo.id)}>Delete</button>
               <input
                 type="checkbox"
                 onChange={() => {
-                  const todoStatus = todo.isComplete
-                  todo.isComplete = !todoStatus
+                  todo.isComplete = !todo.isComplete
                   setTodos([...todos])
                 }}
                 checked={todo.isComplete}

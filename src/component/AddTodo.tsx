@@ -1,37 +1,32 @@
-import { useEffect, useState,ChangeEvent } from "react";
-import { Button, Col, Form, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
+import { useState, ChangeEvent } from "react";
+import {
+  Button,
+  Col,
+  Form,
+  FormControl,
+  InputGroup,
+  Row,
+  Toast,
+} from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
 import Home, { ITodo } from "../component/Home";
 import { v4 as uuidv4 } from "uuid";
 
 function AddTodo() {
-
   const navigate = useNavigate();
-  const [todos, setTodos] = useState<ITodo[]>([]);
-  const [newTitle, setNewTitle] = useState<string>('');
-  const [newContent, setNewContent] = useState<string>('');
-  const [newDueDate, setNewDueDate] = useState<string>('');
-
-
-  useEffect(() => {
-    fetch(API_ENDPOINT + 'todos')
-      .then(res => res.json())
-      .then((data: ITodo[]) => {
-        setTodos(data)
-      })
-  }, [todos])
+  const [newTitle, setNewTitle] = useState<string>("");
+  const [newContent, setNewContent] = useState<string>("");
+  const [newDueDate, setNewDueDate] = useState<string>("");
 
   function handleChangeTitle(e: ChangeEvent<HTMLInputElement>) {
-    setNewTitle(e.target.value)
-
+    setNewTitle(e.target.value);
   }
   function handleChangeContent(e: ChangeEvent<HTMLInputElement>) {
-    setNewContent(e.target.value)
-
+    setNewContent(e.target.value);
   }
   function handleChangeDate(e: ChangeEvent<HTMLInputElement>) {
-    setNewDueDate(e.target.value)
+    setNewDueDate(e.target.value);
   }
   function handleSubmit(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
@@ -47,17 +42,21 @@ function AddTodo() {
       alert(`Due Date cannot be empty`);
       return;
     }
-    fetch(API_ENDPOINT + 'todos', {
+    fetch(`${API_ENDPOINT}todos`, {
       method: "POST",
-      body: JSON.stringify({ id:uuidv4(),content: newContent, title: newTitle, dueDate: newDueDate, isComplete: false }),
-      headers: { 'Content-type': "application/json; charset=UTF-8" }
-
+      body: JSON.stringify({
+        id: uuidv4(),
+        content: newContent,
+        title: newTitle,
+        dueDate: newDueDate,
+        isComplete: false,
+      }),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
     })
-      .then(res => res.json())
+      .then((res) => res.json())
       .then(() => {
-        navigate('/');
-
-      })
+        navigate("/");
+      });
   }
   const getCurrentDate = () => {
     const today = new Date();
@@ -67,54 +66,55 @@ function AddTodo() {
     return `${year}-${month}-${day}`;
   };
 
-  return (<div>
-    <Row className="justify-content-center mt-4">
-      <Col md={6}>
-        <Form>
-          <Form.Group>
-            <Form.Label>Title</Form.Label>
-            <FormControl
-              type="text"
-              placeholder="Enter title"
-              value={newTitle}
-              onChange={handleChangeTitle}
-            />
-          </Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Label>Content</Form.Label>
-            <FormControl
-              as="textarea"
-              placeholder="Enter Content"
-              value={newContent}
-              onChange={handleChangeContent}
-            /></Form.Group>
-          <br />
-          <Form.Group>
-            <Form.Label>Due Date</Form.Label>
-            <FormControl
-              type="date"
-              placeholder="Enter date"
-              value={newDueDate}
-              onChange={handleChangeDate}
-              min={getCurrentDate()}
-            />
-          </Form.Group>
-          <br />
-          <Form.Group></Form.Group>
-          <br />
-          <Form.Group>
-            <div className="d-flex justify-content-center">
-              <Button variant="success" onClick={handleSubmit}>
-                Add Task
-              </Button>
-            </div>
-          </Form.Group>
-        </Form>
-      </Col>
-    </Row>
-
-  </div>);
-
+  return (
+    <div>
+      <Row className="justify-content-center mt-4">
+        <Col md={6}>
+          <Form>
+            <Form.Group>
+              <Form.Label>Title</Form.Label>
+              <FormControl
+                type="text"
+                placeholder="Enter title"
+                value={newTitle}
+                onChange={handleChangeTitle}
+              />
+            </Form.Group>
+            <br />
+            <Form.Group>
+              <Form.Label>Content</Form.Label>
+              <FormControl
+                as="textarea"
+                placeholder="Enter Content"
+                value={newContent}
+                onChange={handleChangeContent}
+              />
+            </Form.Group>
+            <br />
+            <Form.Group>
+              <Form.Label>Due Date</Form.Label>
+              <FormControl
+                type="date"
+                placeholder="Enter date"
+                value={newDueDate}
+                onChange={handleChangeDate}
+                min={getCurrentDate()}
+              />
+            </Form.Group>
+            <br />
+            <Form.Group></Form.Group>
+            <br />
+            <Form.Group>
+              <div className="d-flex justify-content-center">
+                <Button variant="success" onClick={handleSubmit}>
+                  Add Task
+                </Button>
+              </div>
+            </Form.Group>
+          </Form>
+        </Col>
+      </Row>
+    </div>
+  );
 }
 export default AddTodo;

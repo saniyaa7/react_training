@@ -1,14 +1,11 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Home from './component/Home';
-import MyNavbar from './Layout/MyNavbar';
-import AddTodo from './component/AddTodo';
-import { BrowserRouter,Routes,Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import DisplayTodo from './component/DisplayTodo';
-import TodoTable from './shareable_component/TodoTable';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import './App.css';
+import MyNavbar from './Layout/MyNavbar';
+ import AddTodo from './component/AddTodo';
 import CompleteTodo from './component/CompleteTodo';
+import DisplayTodo from './component/DisplayTodo';
+import Home from './component/Home';
 import NotFound from './component/NotFound';
 
 function App() {

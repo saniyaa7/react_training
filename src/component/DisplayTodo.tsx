@@ -5,10 +5,17 @@ import Home, { ITodo } from "../component/Home";
 import { API_ENDPOINT } from "../constants";
 
 function DisplayTodo() {
-  const [todo, setTodo] = useState<ITodo>({ id: "", title: "", content: "", dueDate: "", isComplete: false });
+  const initialValue = {
+    id: "",
+    title: "",
+    content: "",
+    dueDate: "",
+    isComplete: false
+  }
+  const [todo, setTodo] = useState<ITodo>(initialValue);
   const { id } = useParams();
   useEffect(() => {
-    fetch(API_ENDPOINT + 'todos/' + id)
+    fetch(`${API_ENDPOINT}todos/${id}`)
       .then(res => res.json())
       .then(data => setTodo(data))
 

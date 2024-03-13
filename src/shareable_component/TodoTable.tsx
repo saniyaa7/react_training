@@ -9,6 +9,7 @@ import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
 
 
+import useFetch from "../Hook/useFetch";
 
 interface TodoTableProps {
   showButton: boolean;
@@ -19,46 +20,31 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [status, setStatus] = useState<string>('all');
   const [search, setSearch] = useState<string>('');
-  const [toggle,setToggle]=useState<boolean>(false);
+  const [toggle, setToggle] = useState<boolean>(false);
 
   const navigate = useNavigate();
-
-  function FetchData(apiUrl: any) {
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(data => {
-        setTodos(data)
-      })
-      .catch(error => console.error('Error:', error));
-  }
+  const { response: data, err: error, refetchData } = useFetch(completeTask);
 
   useEffect(() => {
-    let apiUrl = API_ENDPOINT + 'todos';
-
-    if (completeTask) {
-      apiUrl += '?isComplete=1';
+    if (data) {
+      setTodos(data)
     }
+  }, [data])
 
-    FetchData(apiUrl);
-  }, [completeTask,]);
+  const deleteTodo = async (id: string) => {
+    const filteredTasks = todos.filter((task) => task.id !== id);
+    setTodos(filteredTasks);
 
-  const deleteTodo = (id: string) => {
-    fetch(API_ENDPOINT + 'todos/' + id, {
+    await fetch(`${API_ENDPOINT}todos/${id}`, {
       method: "DELETE",
-    })
-      .then(res => res.json())
-      .then(data => {
-        FetchData(API_ENDPOINT + 'todos');
-      })
-      .catch(error => console.error('Error:', error));
+      headers: { "Content-Type": "application/json" }
+    });
   };
 
-  const handleCheck = (id:string,checked:boolean) => {
-      const updatedList = todos.map((todo)=> todo.id ===id ? ({...todo,isComplete:checked}): todo)
-    setTodos(updatedList);
-    fetch(API_ENDPOINT + 'todos/' + id, {
+  const handleCheck = (id: string, checked: boolean) => {
+    fetch(`${API_ENDPOINT}todos/${id}`, {
       method: "PATCH",
-      body: JSON.stringify({isComplete:checked}), // Send only the updated isComplete value
+      body: JSON.stringify({ isComplete: checked }),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -67,7 +53,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
         }
         return res.json();
       })
-      .then(data => console.log("update:", data))
+      .then(data => {
+        refetchData(true)
+        console.log(data)
+      })
       .catch(error => console.error('Error:', error));
   };
 
@@ -106,8 +95,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
               <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
               {showButton && <>
                 <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo.id)}>DELETE</Button></td>
-                <td><Button size="sm" onClick={() =>{setToggle(!toggle)
-                   handleCheck(todo.id,toggle)}} variant={todo.isComplete ? "secondary" : "success"}>
+                <td><Button size="sm" onClick={() => {
+                  setToggle(!toggle)
+                  handleCheck(todo.id, toggle)
+                }} variant={todo.isComplete ? "secondary" : "success"}>
                   {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
                 </Button></td>
               </>}

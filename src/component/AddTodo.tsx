@@ -80,7 +80,7 @@ function AddTodo() {
                 onChange={handleChangeTitle}
               />
             </Form.Group>
-            <br />
+
             <Form.Group>
               <Form.Label>Content</Form.Label>
               <FormControl
@@ -90,7 +90,7 @@ function AddTodo() {
                 onChange={handleChangeContent}
               />
             </Form.Group>
-            <br />
+
             <Form.Group>
               <Form.Label>Due Date</Form.Label>
               <FormControl
@@ -101,7 +101,7 @@ function AddTodo() {
                 min={getCurrentDate()}
               />
             </Form.Group>
-            <br />
+
             <Form.Group>
               <div className="d-flex justify-content-center">
                 <Button variant="success" onClick={handleSubmit}>

@@ -85,18 +85,11 @@
       "id": "1124"
     },
     {
-      "id": "c0c0",
-      "content": "d",
-      "title": "avds",
-      "dueDate": "2024-03-21",
-      "isComplete": false
-    },
-    {
       "id": "538f",
       "content": "xc",
       "title": "dfcsd",
       "dueDate": "2024-03-20",
-      "isComplete": false
+      "isComplete": true
     },
     {
       "title": "sadf",

@@ -7,7 +7,7 @@ import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
 import Dropdown from 'react-bootstrap/Dropdown';
 import DropdownButton from 'react-bootstrap/DropdownButton';
-import { log } from "console";
+
 
 
 interface TodoTableProps {
@@ -17,8 +17,10 @@ interface TodoTableProps {
 
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
-  const [status, setStatus] = useState('all');
-  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState<string>('all');
+  const [search, setSearch] = useState<string>('');
+  const [toggle,setToggle]=useState<boolean>(false);
+
   const navigate = useNavigate();
 
   function FetchData(apiUrl: any) {
@@ -26,7 +28,6 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .then(res => res.json())
       .then(data => {
         setTodos(data)
-        console.log("data: ", data)
       })
       .catch(error => console.error('Error:', error));
   }
@@ -41,8 +42,8 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     FetchData(apiUrl);
   }, [completeTask,]);
 
-  const deleteTodo = (todo: ITodo) => {
-    fetch(API_ENDPOINT + 'todos/' + todo.id, {
+  const deleteTodo = (id: string) => {
+    fetch(API_ENDPOINT + 'todos/' + id, {
       method: "DELETE",
     })
       .then(res => res.json())
@@ -52,17 +53,12 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       .catch(error => console.error('Error:', error));
   };
 
-  const handleCheck = (todo: ITodo) => {
-    const updatedTodos = todos.map((t) => {
-      if (t.id === todo.id) {
-        t.isComplete = !t.isComplete;
-      }
-      return t;
-    });
-    setTodos(updatedTodos);
-    fetch(API_ENDPOINT + 'todos/' + todo.id, {
-      method: "PUT",
-      body: JSON.stringify({ title: todo.title, content: todo.content, dueDate: todo.dueDate, isComplete: todo.isComplete }), // Send only the updated isComplete value
+  const handleCheck = (id:string,checked:boolean) => {
+      const updatedList = todos.map((todo)=> todo.id ===id ? ({...todo,isComplete:checked}): todo)
+    setTodos(updatedList);
+    fetch(API_ENDPOINT + 'todos/' + id, {
+      method: "PATCH",
+      body: JSON.stringify({isComplete:checked}), // Send only the updated isComplete value
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -78,7 +74,6 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const currentDate = new Date();
   let expiredTodos = todos.filter(todo => {
     const dueDate = new Date(todo.dueDate);
-    console.log(dueDate.getTime(), dueDate.getTime() > currentDate.getTime())
     return !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime();
   });
 
@@ -110,8 +105,9 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
             <>
               <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
               {showButton && <>
-                <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo)}>DELETE</Button></td>
-                <td><Button size="sm" onClick={() => handleCheck(todo)} variant={todo.isComplete ? "secondary" : "success"}>
+                <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo.id)}>DELETE</Button></td>
+                <td><Button size="sm" onClick={() =>{setToggle(!toggle)
+                   handleCheck(todo.id,toggle)}} variant={todo.isComplete ? "secondary" : "success"}>
                   {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
                 </Button></td>
               </>}

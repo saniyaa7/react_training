@@ -16,17 +16,17 @@ interface TodoTableProps {
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [search, setSearch] = useState('');
-  const [toggle,setToggle]=useState(false);
+  const [toggle, setToggle] = useState(false);
   const navigate = useNavigate();
-  const {response:data,err: error,refetchData} = useFetch(completeTask);
+  const { response: data, err: error, refetchData } = useFetch(completeTask);
 
   useEffect(() => {
-    if(data){
+    if (data) {
       setTodos(data)
     }
   }, [data])
 
-  const deleteTodo = async(id: string) => {
+  const deleteTodo = async (id: string) => {
     const filteredTasks = todos.filter((task) => task.id !== id);
     setTodos(filteredTasks);
 
@@ -36,10 +36,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     });
   };
 
-  const handleCheck = (id: string,checked:boolean) => {
+  const handleCheck = (id: string, checked: boolean) => {
     fetch(`${API_ENDPOINT}todos/${id}`, {
       method: "PATCH",
-      body: JSON.stringify({isComplete:checked}),
+      body: JSON.stringify({ isComplete: checked }),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -50,7 +50,8 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       })
       .then(data => {
         refetchData(true)
-        console.log(data)})
+        console.log(data)
+      })
       .catch(error => console.error('Error:', error));
   };
   const currentDate = new Date();
@@ -62,7 +63,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
 
 
   return (
-    
+
     <><Form>
       <InputGroup className="w-50 mx-auto my-3">
         <FormControl placeholder="Search list" onChange={(e) => setSearch(e.target.value)} className="custom-search-bar" />
@@ -84,8 +85,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                 <td><Link to={`/todo-add/${todo.id}`} className="todo-link">{todo.title}</Link></td>
                 {showButton && <>
                   <td><Button variant="danger" size="sm" onClick={() => deleteTodo(todo.id)}>DELETE</Button></td>
-                  <td><Button size="sm" onClick={(e) => {setToggle(!toggle)
-                    handleCheck(todo.id,toggle)}} variant={todo.isComplete ? "secondary" : "success"}>
+                  <td><Button size="sm" onClick={(e) => {
+                    setToggle(!toggle)
+                    handleCheck(todo.id, toggle)
+                  }} variant={todo.isComplete ? "secondary" : "success"}>
                     {todo.isComplete ? "MARK AS INCOMPLETE" : "MARK AS COMPLETE"}
                   </Button></td>
                 </>}

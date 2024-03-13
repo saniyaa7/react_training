@@ -1,11 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,ChangeEvent } from "react";
 import { Button, Col, Form, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
 import Home, { ITodo } from "../component/Home";
+import { v4 as uuidv4 } from "uuid";
+
 
 function AddTodo() {
-
+  // console.log(e)
   const navigate = useNavigate();
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [newTitle, setNewTitle] = useState<string>('');
@@ -23,47 +25,41 @@ function AddTodo() {
       })
   }, [todos])
 
-  function handleChangeTitle(e: any) {
-    console.log(e.target.value)
+  function handleChangeTitle(e: ChangeEvent<HTMLInputElement>) {
     setNewTitle(e.target.value)
 
   }
-  function handleChangeContent(e: any) {
-    console.log(e.target.value)
+  function handleChangeContent(e: ChangeEvent<HTMLInputElement>) {
     setNewContent(e.target.value)
 
   }
-  function handleChangeDate(e: any) {
+  function handleChangeDate(e: ChangeEvent<HTMLInputElement>) {
     setNewDueDate(e.target.value)
   }
-  function handleSubmit(e: any) {
+  function handleSubmit(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
-    if (newTitle.length === 0) {
+    if (!newTitle.length) {
       alert(`title cannot be empty`);
       return;
     }
-    if (newContent.length === 0) {
+    if (!newContent.length) {
       alert(`Content cannot be empty`);
       return;
     }
-    if (newDueDate.length === 0) {
+    if (!newDueDate.length) {
       alert(`Due Date cannot be empty`);
       return;
     }
     fetch(API_ENDPOINT + 'todos', {
       method: "POST",
-      body: JSON.stringify({ content: newContent, title: newTitle, dueDate: newDueDate, isComplete: false }),
+      body: JSON.stringify({ id: uuidv4(),content: newContent, title: newTitle, dueDate: newDueDate, isComplete: false }),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
 
     })
       .then(res => res.json())
-      .then((data) => {
-        setTodos([...todos, data])
-        setNewTitle('');
-        setNewContent('')
-        navigate('/');
+      .then(()=>{navigate('/');}
 
-      })
+      )
   }
   const getCurrentDate = () => {
     const today = new Date();

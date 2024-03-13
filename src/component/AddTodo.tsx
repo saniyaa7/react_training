@@ -1,4 +1,4 @@
-import { useEffect, useState,ChangeEvent } from "react";
+import { useEffect, useState, ChangeEvent } from "react";
 import { Button, Col, Form, FormControl, InputGroup, Row, Toast } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
@@ -7,23 +7,10 @@ import { v4 as uuidv4 } from "uuid";
 
 
 function AddTodo() {
-  // console.log(e)
   const navigate = useNavigate();
-  const [todos, setTodos] = useState<ITodo[]>([]);
   const [newTitle, setNewTitle] = useState<string>('');
   const [newContent, setNewContent] = useState<string>('');
   const [newDueDate, setNewDueDate] = useState<string>('');
-  const [nextId, setNextId] = useState<number>(todos.length + 1)
-  const [status, setStatus] = useState(false);
-
-  useEffect(() => {
-    fetch(API_ENDPOINT + 'todos')
-      .then(res => res.json())
-      .then((data: ITodo[]) => {
-        setTodos(data)
-        setNextId(data.length + 1)
-      })
-  }, [todos])
 
   function handleChangeTitle(e: ChangeEvent<HTMLInputElement>) {
     setNewTitle(e.target.value)
@@ -52,12 +39,12 @@ function AddTodo() {
     }
     fetch(API_ENDPOINT + 'todos', {
       method: "POST",
-      body: JSON.stringify({ id: uuidv4(),content: newContent, title: newTitle, dueDate: newDueDate, isComplete: false }),
+      body: JSON.stringify({ id: uuidv4(), content: newContent, title: newTitle, dueDate: newDueDate, isComplete: false }),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
 
     })
       .then(res => res.json())
-      .then(()=>{navigate('/');}
+      .then(() => { navigate('/'); }
 
       )
   }

@@ -5,6 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Home, { ITodo } from "../component/Home";
 import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
+import useFetch from "../Hook/useFetch";
 
 interface TodoTableProps {
   showButton: boolean;
@@ -17,46 +18,28 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [search, setSearch] = useState('');
   const [toggle,setToggle]=useState(false);
   const navigate = useNavigate();
-
-  function FetchData(apiUrl: string) {
-    fetch(apiUrl)
-      .then(res => res.json())
-      .then(data => {
-        setTodos(data)
-        
-      })
-      .catch(error => console.error('Error:', error));
-  }
+  const {response:data,err: error,refetchData} = useFetch(completeTask);
 
   useEffect(() => {
-    let apiUrl = API_ENDPOINT + 'todos';
-
-    if (completeTask) {
-      apiUrl += '?isComplete=1';
+    if(data){
+      setTodos(data)
     }
+  }, [data])
 
-    FetchData(apiUrl);
-  }, [completeTask,]);
+  const deleteTodo = async(id: string) => {
+    const filteredTasks = todos.filter((task) => task.id !== id);
+    setTodos(filteredTasks);
 
-  const deleteTodo = (id: string) => {
-    fetch(API_ENDPOINT + 'todos/' + id, {
+    await fetch(`${API_ENDPOINT}todos/${id}`, {
       method: "DELETE",
-    })
-      .then(res => res.json())
-      .then(data => {
-        FetchData(API_ENDPOINT + 'todos');
-      })
-      .catch(error => console.error('Error:', error));
+      headers: { "Content-Type": "application/json" }
+    });
   };
 
   const handleCheck = (id: string,checked:boolean) => {
-    const updatedList = todos.map((todo)=> todo.id ===id ? ({...todo,isComplete:checked}): todo)
-     setTodos(updatedList);
-
-
-    fetch(API_ENDPOINT + 'todos/' +id, {
+    fetch(`${API_ENDPOINT}todos/${id}`, {
       method: "PATCH",
-      body: JSON.stringify({isComplete:checked}), // Send only the updated isComplete value
+      body: JSON.stringify({isComplete:checked}),
       headers: { 'Content-type': "application/json; charset=UTF-8" }
     })
       .then((res) => {
@@ -65,7 +48,9 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
         }
         return res.json();
       })
-      .then(data => console.log("update:", data))
+      .then(data => {
+        refetchData(true)
+        console.log(data)})
       .catch(error => console.error('Error:', error));
   };
   const currentDate = new Date();
@@ -77,6 +62,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
 
 
   return (
+    
     <><Form>
       <InputGroup className="w-50 mx-auto my-3">
         <FormControl placeholder="Search list" onChange={(e) => setSearch(e.target.value)} className="custom-search-bar" />

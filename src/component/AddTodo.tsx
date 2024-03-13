@@ -102,8 +102,6 @@ function AddTodo() {
               />
             </Form.Group>
             <br />
-            <Form.Group></Form.Group>
-            <br />
             <Form.Group>
               <div className="d-flex justify-content-center">
                 <Button variant="success" onClick={handleSubmit}>

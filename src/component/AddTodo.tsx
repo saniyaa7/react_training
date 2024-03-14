@@ -1,63 +1,36 @@
-import { useState, ChangeEvent } from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import { ITodo } from "../component/Home";
+import * as yup from "yup";
+import "./AddTodo.css";
 import {
-  Button,
   Col,
-  Form,
-  FormControl,
-  InputGroup,
   Row,
-  Toast,
 } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
-import Home, { ITodo } from "../component/Home";
 import { v4 as uuidv4 } from "uuid";
+
+const validationRules = yup.object().shape({
+  title: yup.string().required("Title is required"),
+  content: yup.string().required("Description is required"),
+  dueDate: yup.date().required("Date is required"),
+});
+
+type ValuesType = {
+  title: string;
+  content: string;
+  dueDate: string;
+};
+
+const initialValues: ValuesType = {
+  title: "",
+  content: "",
+  dueDate: "",
+};
 
 function AddTodo() {
   const navigate = useNavigate();
-  const [newTitle, setNewTitle] = useState<string>("");
-  const [newContent, setNewContent] = useState<string>("");
-  const [newDueDate, setNewDueDate] = useState<string>("");
 
-  function handleChangeTitle(e: ChangeEvent<HTMLInputElement>) {
-    setNewTitle(e.target.value);
-  }
-  function handleChangeContent(e: ChangeEvent<HTMLInputElement>) {
-    setNewContent(e.target.value);
-  }
-  function handleChangeDate(e: ChangeEvent<HTMLInputElement>) {
-    setNewDueDate(e.target.value);
-  }
-  function handleSubmit(e: React.MouseEvent<HTMLElement>) {
-    e.preventDefault();
-    if (!newTitle.length) {
-      alert(`title cannot be empty`);
-      return;
-    }
-    if (!newContent.length) {
-      alert(`Content cannot be empty`);
-      return;
-    }
-    if (!newDueDate.length) {
-      alert(`Due Date cannot be empty`);
-      return;
-    }
-    fetch(`${API_ENDPOINT}todos`, {
-      method: "POST",
-      body: JSON.stringify({
-        id: uuidv4(),
-        content: newContent,
-        title: newTitle,
-        dueDate: newDueDate,
-        isComplete: false,
-      }),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then(() => {
-        navigate("/");
-      });
-  }
   const getCurrentDate = () => {
     const today = new Date();
     const year = today.getFullYear();
@@ -66,53 +39,92 @@ function AddTodo() {
     return `${year}-${month}-${day}`;
   };
 
+  const handleSubmit = (values: ValuesType) => {
+    const payload: ITodo = {
+      id: uuidv4(),
+      content: values.content,
+      title: values.title,
+      dueDate: values.dueDate,
+      isComplete: false,
+    };
+
+    fetch(`${API_ENDPOINT}todos`, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-type": "application/json; charset=UTF-8" },
+    })
+      .then((res) => res.json())
+      .then(() => {
+        navigate("/");
+      });
+  };
+
   return (
     <div>
-      <Row className="justify-content-center mt-4">
-        <Col md={6}>
+      <Formik
+        initialValues={initialValues}
+        onSubmit={(values) => handleSubmit(values)}
+        validationSchema={validationRules}
+      >
+        {({ errors, touched }) => (
           <Form>
-            <Form.Group>
-              <Form.Label>Title</Form.Label>
-              <FormControl
-                type="text"
-                placeholder="Enter title"
-                value={newTitle}
-                onChange={handleChangeTitle}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Content</Form.Label>
-              <FormControl
-                as="textarea"
-                placeholder="Enter Content"
-                value={newContent}
-                onChange={handleChangeContent}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <Form.Label>Due Date</Form.Label>
-              <FormControl
-                type="date"
-                placeholder="Enter date"
-                value={newDueDate}
-                onChange={handleChangeDate}
-                min={getCurrentDate()}
-              />
-            </Form.Group>
-
-            <Form.Group>
-              <div className="d-flex justify-content-center">
-                <Button variant="success" onClick={handleSubmit}>
-                  Add Task
-                </Button>
-              </div>
-            </Form.Group>
+            <Row className="justify-content-center mt-4">
+              <Col md={6}>
+                <div className="form-group">
+                  <label htmlFor="title">Title</label>
+                  <Field
+                    type="text"
+                    name="title"
+                    className={`form-control ${touched.title && errors.title ? "is-invalid" : ""
+                      }`}
+                    placeholder="Title"
+                  />
+                  <ErrorMessage
+                    name="title"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="content">Content</label>
+                  <Field
+                    as="textarea"
+                    name="content"
+                    className={`form-control ${touched.content && errors.content ? "is-invalid" : ""
+                      }`}
+                    placeholder="Content"
+                  />
+                  <ErrorMessage
+                    name="content"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <div className="form-group">
+                  <label htmlFor="dueDate">Due Date</label>
+                  <Field
+                    type="date"
+                    name="dueDate"
+                    className={`form-control ${touched.dueDate && errors.dueDate ? "is-invalid" : ""
+                      }`}
+                    min={getCurrentDate()}
+                  />
+                  <ErrorMessage
+                    name="dueDate"
+                    component="div"
+                    className="invalid-feedback"
+                  />
+                </div>
+                <button className="btn btn-primary mt-4 justify-items-center" type="submit">
+                  Add
+                </button>
+              </Col>
+            </Row>
           </Form>
-        </Col>
-      </Row>
+        )}
+      </Formik>
     </div>
   );
 }
+
 export default AddTodo;

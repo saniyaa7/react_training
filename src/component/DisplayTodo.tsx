@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Container, Row, Col, Badge } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
-import Home, { ITodo } from "../component/Home";
+import { ITodo } from "../component/Home";
 import { API_ENDPOINT } from "../constants";
 
 function DisplayTodo() {

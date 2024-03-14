@@ -1,0 +1,17 @@
+/* AddTodo.css */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-control {
+  border-radius: 5px;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+}
+
+.btn-primary {
+  margin-bottom: 20px;
+}

@@ -10,21 +10,16 @@ function DisplayTodo() {
     title: "",
     content: "",
     dueDate: "",
-    isComplete: false
+    isComplete: false,
   };
   const [todo, setTodo] = useState<ITodo>(initialValue);
   const { id } = useParams();
 
   useEffect(() => {
     fetch(`${API_ENDPOINT}todos/${id}`)
-      .then(res => res.json())
-      .then(data => setTodo(data));
+      .then((res) => res.json())
+      .then((data) => setTodo(data));
   }, [id]);
-  let color;
-  if (todo.isComplete)
-    color = "success";
-  else
-    color = "danger";
 
   return (
     <div className="App ">
@@ -33,20 +28,23 @@ function DisplayTodo() {
           <Col>
             <>
               {/* Apply inline styles to make the title bigger and centered horizontally */}
-              <h4 style={{ fontSize: '28px', marginBottom: '20px' }}>Title: {todo.title}</h4>
+              <h4 style={{ fontSize: "28px", marginBottom: "20px" }}>
+                Title: {todo.title}
+              </h4>
               <p style={{}}>Content: {todo.content}</p>
               <p className="lead">Due Date: {todo.dueDate}</p>
-              <span className="lead">Status: {" "}
-                <Badge>
-                  {todo.isComplete ? "Complete" : "Incomplete"}
-                </Badge>
+              <span className="lead">
+                Status:{" "}
+                <Badge>{todo.isComplete ? "Complete" : "Incomplete"}</Badge>
               </span>
             </>
           </Col>
         </Row>
         <Row className="mt-3">
           <Col>
-            <Link to="/" className="btn btn-secondary">Back to Todo List</Link>
+            <Link to="/" className="btn btn-secondary">
+              Back to Todo List
+            </Link>
           </Col>
         </Row>
       </Container>

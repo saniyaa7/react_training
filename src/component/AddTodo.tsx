@@ -2,10 +2,7 @@ import { Formik, Form, Field, ErrorMessage } from "formik";
 import { ITodo } from "../component/Home";
 import * as yup from "yup";
 import "./AddTodo.css";
-import {
-  Col,
-  Row,
-} from "react-bootstrap";
+import { Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
 import { v4 as uuidv4 } from "uuid";
@@ -75,8 +72,9 @@ function AddTodo() {
                   <Field
                     type="text"
                     name="title"
-                    className={`form-control ${touched.title && errors.title ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      touched.title && errors.title ? "is-invalid" : ""
+                    }`}
                     placeholder="Title"
                   />
                   <ErrorMessage
@@ -90,8 +88,9 @@ function AddTodo() {
                   <Field
                     as="textarea"
                     name="content"
-                    className={`form-control ${touched.content && errors.content ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      touched.content && errors.content ? "is-invalid" : ""
+                    }`}
                     placeholder="Content"
                   />
                   <ErrorMessage
@@ -105,8 +104,9 @@ function AddTodo() {
                   <Field
                     type="date"
                     name="dueDate"
-                    className={`form-control ${touched.dueDate && errors.dueDate ? "is-invalid" : ""
-                      }`}
+                    className={`form-control ${
+                      touched.dueDate && errors.dueDate ? "is-invalid" : ""
+                    }`}
                     min={getCurrentDate()}
                   />
                   <ErrorMessage
@@ -115,7 +115,10 @@ function AddTodo() {
                     className="invalid-feedback"
                   />
                 </div>
-                <button className="btn btn-primary mt-4 justify-items-center" type="submit">
+                <button
+                  className="btn btn-primary mt-4 justify-items-center"
+                  type="submit"
+                >
                   Add
                 </button>
               </Col>

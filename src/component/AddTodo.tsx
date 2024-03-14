@@ -6,6 +6,7 @@ import { Col, Row } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 import { API_ENDPOINT } from "../constants";
 import { v4 as uuidv4 } from "uuid";
+import { AddTodoMutation } from "../Hook/todo.hook";
 
 const validationRules = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -27,6 +28,7 @@ const initialValues: ValuesType = {
 
 function AddTodo() {
   const navigate = useNavigate();
+  const { mutate } = AddTodoMutation()
 
   const getCurrentDate = () => {
     const today = new Date();
@@ -36,7 +38,7 @@ function AddTodo() {
     return `${year}-${month}-${day}`;
   };
 
-  const handleSubmit = (values: ValuesType) => {
+  const handleSubmit = async (values: ValuesType) => {
     const payload: ITodo = {
       id: uuidv4(),
       content: values.content,
@@ -45,16 +47,20 @@ function AddTodo() {
       isComplete: false,
     };
 
-    fetch(`${API_ENDPOINT}todos`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => res.json())
-      .then(() => {
-        navigate("/");
+    try {
+      await mutate(payload, {
+        onSuccess: () => {
+          navigate("/");
+        },
+        onError: (error) => {
+          console.error("Error adding todo:", error);
+        }
       });
+    } catch (error) {
+      console.error("Error adding todo:", error);
+    }
   };
+
 
   return (
     <div>

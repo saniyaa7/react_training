@@ -14,8 +14,7 @@ import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-
-import useFetch from "../Hook/useFetch";
+import { useFetch, useDeleteTodo, usePatchCheckTodo } from "../Hook/todo.hook";
 
 interface TodoTableProps {
   showButton: boolean;
@@ -28,41 +27,54 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [search, setSearch] = useState<string>("");
   const [toggle, setToggle] = useState<boolean>(false);
 
-  const { response: data, err: error, refetchData } = useFetch(completeTask);
+  const { data, error, isLoading, refetch } = useFetch(completeTask);
+  const { deleteTodo } = useDeleteTodo();
+  const {patchCheckTodo,isPatchSuccess} = usePatchCheckTodo()
 
   useEffect(() => {
     if (data) {
-      setTodos(data);
+      setTodos(data.data);
     }
   }, [data]);
 
-  const deleteTodo = async (id: string) => {
-    const filteredTasks = todos.filter((task) => task.id !== id);
-    setTodos(filteredTasks);
+  useEffect(()=>{
+    if(isPatchSuccess){
+      refetch()
+    }
+  },[isPatchSuccess, refetch])
 
-    await fetch(`${API_ENDPOINT}todos/${id}`, {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-    });
+  const deleteTodoFun = async (id: string) => {
+    try {
+      await deleteTodo(id);
+      refetch();
+    } catch (err) {
+      console.log("Error in deleting task", err);
+    }
   };
 
+  // const handleCheck = (id: string, checked: boolean) => {
+  //   fetch(`${API_ENDPOINT}todos/${id}`, {
+  //     method: "PATCH",
+  //     body: JSON.stringify({ isComplete: checked }),
+  //     headers: { "Content-type": "application/json; charset=UTF-8" },
+  //   })
+  //     .then((res) => {
+  //       if (!res.ok) {
+  //         throw new Error(`HTTP error! Status: ${res.status}`);
+  //       }
+  //       return res.json();
+  //     })
+  //     .then((data) => {
+  //       refetch();
+  //       console.log(data);
+  //     })
+  //     .catch((error) => console.error("Error:", error));
+  // };
+
   const handleCheck = (id: string, checked: boolean) => {
-    fetch(`${API_ENDPOINT}todos/${id}`, {
-      method: "PATCH",
-      body: JSON.stringify({ isComplete: checked }),
-      headers: { "Content-type": "application/json; charset=UTF-8" },
-    })
-      .then((res) => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then((data) => {
-        refetchData(true);
-        console.log(data);
-      })
-      .catch((error) => console.error("Error:", error));
+  
+    patchCheckTodo({id,checked})
+  
   };
 
   const currentDate = new Date();
@@ -119,7 +131,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                     <Button
                       variant="danger"
                       size="sm"
-                      onClick={() => deleteTodo(todo.id)}
+                      onClick={() => deleteTodoFun(todo.id)}
                     >
                       DELETE
                     </Button>

@@ -1,198 +1,95 @@
 {
   "todos": [
     {
-      "id": "20b0",
-      "content": "",
-      "title": "xzc z",
-      "dueDate": "",
+      "id": "3f97424c-4197-4a79-bfad-69a358273431",
+      "content": "sad",
+      "title": "React",
+      "dueDate": "2024-04-03",
       "isComplete": false
     },
     {
-      "id": "9bed",
-      "content": "",
-      "title": "a",
-      "dueDate": "",
+      "id": "67840c65-934d-4469-8661-3f15b26d3349",
+      "content": "sadf",
+      "title": "Network",
+      "dueDate": "2024-04-05",
       "isComplete": false
     },
     {
-      "id": "fbd8",
-      "content": "",
-      "title": "b",
-      "dueDate": "2024-03-02",
+      "id": "0de7aefe-4e2a-4d37-80ec-2add754f9211",
+      "content": "sdfsd",
+      "title": "HTML",
+      "dueDate": "2024-03-29",
       "isComplete": false
     },
     {
-      "id": "68a0",
-      "content": "ds",
+      "id": "b3216583-eaf0-4d51-835a-315666494c61",
+      "content": "wre",
+      "title": "Data structure",
+      "dueDate": "2024-04-05",
+      "isComplete": false
+    },
+    {
+      "id": "69cd179e-916c-482a-90db-230dac188185",
+      "content": "sad",
+      "title": "time pass",
+      "dueDate": "2024-03-29",
+      "isComplete": false
+    },
+    {
+      "id": "e785ff37-4569-4dba-a4ad-0f392d765593",
+      "content": "aax",
+      "title": "xyz",
+      "dueDate": "2024-03-30",
+      "isComplete": false
+    },
+    {
+      "id": "2dfde615-c062-48e5-93b4-5e1ff97374ae",
+      "content": "xz",
       "title": "abc",
-      "dueDate": "2024-03-07",
+      "dueDate": "2024-03-30",
       "isComplete": false
     },
     {
-      "id": "ead4",
+      "id": "23496838-3f24-4a99-8bb5-9c51757f9771",
       "content": "azx",
-      "title": "sanu",
-      "dueDate": "2024-03-01",
+      "title": "databse",
+      "dueDate": "2024-03-29",
       "isComplete": false
     },
     {
-      "title": "Learn CSS",
-      "content": "from W3school",
-      "dueDate": "2024-03-09",
-      "isComplete": true,
-      "id": "5f74"
-    },
-    {
-      "id": "2f1e",
-      "content": "dsca",
-      "title": "abc",
-      "dueDate": "2024-03-01",
+      "id": "0593f627-f62e-4e16-b690-fa7a5d2671dc",
+      "content": "zxc",
+      "title": "DBMS",
+      "dueDate": "2024-03-29",
       "isComplete": false
     },
     {
-      "id": "9ce5",
-      "content": "from youtube",
-      "title": "Learn Raect",
-      "dueDate": "2024-03-01",
+      "id": "78a074bd-6cc0-4519-b8e5-c4689e0c8594",
+      "content": "za",
+      "title": "OOPS",
+      "dueDate": "2024-03-23",
       "isComplete": false
     },
     {
-      "id": "8fb2",
-      "content": "szx",
-      "title": "scv",
-      "dueDate": "2024-03-02",
+      "id": "70d22836-d5af-4ced-9952-3644a8ba2201",
+      "content": "sdc",
+      "title": "uuu",
+      "dueDate": "2024-04-04",
       "isComplete": false
     },
     {
-      "id": "121f",
-      "content": "abcd",
-      "title": "learn ABCD",
-      "dueDate": "2024-03-09",
+      "id": "ada63ce9-fa59-47cf-b0e4-0ec2ec86e0fb",
+      "content": "sad",
+      "title": "query",
+      "dueDate": "2024-03-30",
       "isComplete": false
     },
     {
-      "id": "aae1",
-      "content": "bn",
-      "title": "jgh",
-      "dueDate": "2024-03-09",
+      "id": "f6edb759-699a-4fb2-af67-f78cd3e0ea4f",
+      "content": "sdaf",
+      "title": "learn Javscript",
+      "dueDate": "2024-03-30",
       "isComplete": false
-    },
-    {
-      "title": "bn",
-      "content": "m",
-      "dueDate": "2024-03-10",
-      "isComplete": true,
-      "id": "1124"
-    },
-    {
-      "title": "sadf",
-      "content": "sac",
-      "dueDate": "2024-03-12",
-      "isComplete": true,
-      "id": "93a7"
-    },
-    {
-      "id": "6e0fa996-59e9-4c47-b96d-a24eb87ee864",
-      "content": "zx",
-      "title": "xc ",
-      "dueDate": "2024-03-22",
-      "isComplete": true,
-      "completed": false,
-      "isCompleted": true
-    },
-    {
-      "id": "9a68775e-d051-42eb-b0bf-d26ea3f01c1b",
-      "content": "from youtube",
-      "title": "Learn Javascript",
-      "dueDate": "2024-03-21",
-      "isComplete": true,
-      "completed": true
-    },
-    {
-      "id": "c4432395-be65-4ebc-870b-34af924c5bb4",
-      "content": "New",
-      "title": "New",
-      "dueDate": "2024-03-14",
-      "isComplete": false
-    },
-    {
-      "id": "ae7b1678-cfa4-47b1-a00e-98a1678e2e41",
-      "content": "z",
-      "title": "tile",
-      "dueDate": "2024-03-13",
-      "isComplete": false
-    },
-    {
-      "id": "647077fe-6a0f-4bc6-95d7-fe0ea7ef78eb",
-      "content": "ZX",
-      "title": "xz ",
-      "dueDate": "2024-03-14",
-      "isComplete": true
-    },
-    {
-      "id": "09e673d9-1eac-4656-a526-81d246fcaf20",
-      "content": "zx",
-      "title": "ZX",
-      "dueDate": "2024-03-22",
-      "isComplete": false,
-      "isCompleted": false
-    },
-    {
-      "id": "804f2194-b7c9-4283-8b39-fda576e1e5ae",
-      "content": "xyz",
-      "title": "abc",
-      "dueDate": "2024-03-15",
-      "isComplete": false
-    },
-    {
-      "id": "6afe3b16-5d36-42ba-9402-c6a96ec7d7b9",
-      "content": "k",
-      "title": "k",
-      "dueDate": "7777-06-09",
-      "isComplete": false
-    },
-    {
-      "id": "e180",
-      "payload": {
-        "id": "dafc48c7-ec6e-4175-ab46-6486444d71d3",
-        "content": "xzc",
-        "title": "sanu",
-        "dueDate": "2024-03-21",
-        "isComplete": false
-      }
-    },
-    {
-      "id": "530c"
-    },
-    {
-      "id": "1ded5d73-13a8-4a08-b20d-f544497be477",
-      "content": "zx",
-      "title": "abcdefghijklmnopqrstuvwxyz",
-      "dueDate": "2024-03-15",
-      "isComplete": false,
-      "isCompleted": false
-    },
-    {
-      "id": "bdd65449-9676-498e-b1b6-93eacecbf79d",
-      "content": "is content",
-      "title": "This ",
-      "dueDate": "2024-03-14",
-      "isComplete": false
-    },
-    {
-      "id": "9185cab8-3e70-44cf-8951-6f4b27d0a9cd",
-      "content": "s. chaudhari",
-      "title": "this is new task",
-      "dueDate": "2024-03-15",
-      "isComplete": false,
-      "completed": true
-    },
-    {
-      "id": "22b9defc-b68f-4afc-bc82-197c4c52c7c4",
-      "content": "asd",
-      "title": "sanu",
-      "dueDate": "2024-03-22",
-      "isComplete": true
     }
   ]
 }

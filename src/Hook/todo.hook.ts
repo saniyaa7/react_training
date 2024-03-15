@@ -3,17 +3,24 @@ import { ITodo } from "../component/Home";
 import axios from "axios";
 import { API_ENDPOINT } from "../constants";
 
+interface GetTodoRequest {
+  _page: number;
+  _limit: number;
+}
+
 interface PatchTodoRequest {
   id: string;
   checked: boolean;
 }
 
-export const useFetch = (completeTask: boolean) => {
+export const useFetch = (completeTask: boolean, params: GetTodoRequest) => {
   let api_url = API_ENDPOINT + "todos";
-  if (completeTask) api_url += "?isComplete=1";
+  if (completeTask) api_url += "?isComplete=true";
+
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["todos"],
-    queryFn: async () => await axios.get<ITodo[]>(api_url),
+    queryKey: ["todos", params],
+    queryFn: async () =>
+      await axios.get<ITodo[]>(api_url, { params }).then((res) => res),
   });
 
   return { data, error, isLoading, refetch };
@@ -44,7 +51,7 @@ export const useDeleteTodo = () => {
 
 export const usePatchCheckTodo = () => {
   // const queryClient = useQueryClient()
-  const { mutate, isSuccess, isPending, } = useMutation({
+  const { mutate, isSuccess, isPending } = useMutation({
     mutationFn: ({ id, checked }: PatchTodoRequest) => {
       return axios.patch(`${API_ENDPOINT}todos/${id}`, { isComplete: checked });
     },
@@ -52,8 +59,12 @@ export const usePatchCheckTodo = () => {
       // queryClient.invalidateQueries({ queryKey: ['todos'] })
     },
     onError: (err) => {
-      alert(err)
-    }
-  })
-  return { patchCheckTodo: mutate, isPatchSuccess: isSuccess, isPatchPending: isPending }
-}
+      alert(err);
+    },
+  });
+  return {
+    patchCheckTodo: mutate,
+    isPatchSuccess: isSuccess,
+    isPatchPending: isPending,
+  };
+};

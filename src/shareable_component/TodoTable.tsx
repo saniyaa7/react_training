@@ -26,10 +26,24 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [status, setStatus] = useState<string>("all");
   const [search, setSearch] = useState<string>("");
   const [toggle, setToggle] = useState<boolean>(false);
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(5);
+  const [totalpages, setTotalPages] = useState(2);
 
-  const { data, error, isLoading, refetch } = useFetch(completeTask);
-  const { deleteTodo } = useDeleteTodo();
-  const {patchCheckTodo,isPatchSuccess} = usePatchCheckTodo()
+  const { data, error, isLoading, refetch } = useFetch(completeTask, {
+    _page: page,
+    _limit: limit,
+  });
+
+  const { deleteTodo, isdeleteSuccess } = useDeleteTodo();
+  const { patchCheckTodo, isPatchSuccess } = usePatchCheckTodo();
+
+  useEffect(() => {
+    if (data) {
+      setTodos(data.data);
+      setTotalPages(Math.ceil(data.headers["x-total-count"] / limit));
+    }
+  }, [data, limit]);
 
   useEffect(() => {
     if (data) {
@@ -37,11 +51,11 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     }
   }, [data]);
 
-  useEffect(()=>{
-    if(isPatchSuccess){
-      refetch()
+  useEffect(() => {
+    if (isPatchSuccess || isdeleteSuccess) {
+      refetch();
     }
-  },[isPatchSuccess, refetch])
+  }, [isPatchSuccess, isdeleteSuccess, refetch]);
 
   const deleteTodoFun = async (id: string) => {
     try {
@@ -52,29 +66,8 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     }
   };
 
-  // const handleCheck = (id: string, checked: boolean) => {
-  //   fetch(`${API_ENDPOINT}todos/${id}`, {
-  //     method: "PATCH",
-  //     body: JSON.stringify({ isComplete: checked }),
-  //     headers: { "Content-type": "application/json; charset=UTF-8" },
-  //   })
-  //     .then((res) => {
-  //       if (!res.ok) {
-  //         throw new Error(`HTTP error! Status: ${res.status}`);
-  //       }
-  //       return res.json();
-  //     })
-  //     .then((data) => {
-  //       refetch();
-  //       console.log(data);
-  //     })
-  //     .catch((error) => console.error("Error:", error));
-  // };
-
   const handleCheck = (id: string, checked: boolean) => {
-  
-    patchCheckTodo({id,checked})
-  
+    patchCheckTodo({ id, checked });
   };
 
   const currentDate = new Date();
@@ -101,6 +94,11 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     if (direction === "ascending")
       setTodos([...todos].sort((a, b) => a.title.localeCompare(b.title)));
     else setTodos([...todos].sort((a, b) => b.title.localeCompare(a.title)));
+  };
+
+  const handlePageChange = (page: number) => {
+    setPage(page);
+    // refetchTodos()
   };
 
   const displayData = (status: string) => (
@@ -201,7 +199,36 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
           </Col>
         </Row>
       </div>
-      {displayData(status)} {/* Corrected invocation */}
+      {displayData(status)}
+      <div>
+        <input
+          className="mt-3 w-20"
+          type="number"
+          placeholder="set limit"
+          value={limit}
+          onChange={(e) => {
+            setLimit(parseInt(e.target.value));
+            setPage(1);
+          }}
+          style={{ marginRight: "100px" }}
+        />
+        <button
+          className="btn btn-primary"
+          onClick={() => handlePageChange(page - 1)}
+          disabled={page === 1}
+        >
+          Previous
+        </button>
+        {page}/{totalpages}
+        <button
+          className="btn btn-primary ms-2"
+          onClick={() => handlePageChange(page + 1)}
+          disabled={page >= totalpages}
+        >
+          Next
+        </button>
+        <br />
+      </div>
     </>
   );
 }

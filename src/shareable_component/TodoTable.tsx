@@ -105,24 +105,28 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     <Table striped bordered hover className="todo-table text-center">
       <thead>
         <tr>
+          <th>Number</th>
           <th>Title</th>
+          <th>Due</th>
           {showButton && (
             <>
-              <th style={{ width: "25%" }}>Action</th>
+              <th style={{ width: "15%" }}>Action</th>
               <th style={{ width: "25%" }}>Status</th>
             </>
           )}
         </tr>
       </thead>
       <tbody>
-        {serachFilter.map((todo) => (
+        {serachFilter.map((todo, index) => (
           <tr key={todo.id}>
             <>
+              <td style={{ width: "5%" }}>{index + 1}</td>
               <td>
                 <Link to={`/todo-add/${todo.id}`} className="todo-link">
                   {todo.title}
                 </Link>
               </td>
+              <td>{calculateDueTimeRemaining(todo.dueDate)}</td>
               {showButton && (
                 <>
                   <td>
@@ -156,6 +160,31 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
       </tbody>
     </Table>
   );
+  const calculateDueTimeRemaining = (dueDate: string): string => {
+    const currentDate = new Date();
+    const dueDateObj = new Date(dueDate);
+    const timeDiff = dueDateObj.getTime() - currentDate.getTime();
+
+    if (timeDiff < 0) {
+        return "Expired";
+    }
+
+    const secondsDiff = Math.floor(timeDiff / 1000);
+    const minutesDiff = Math.floor(secondsDiff / 60);
+    const hoursDiff = Math.floor(minutesDiff / 60);
+    const daysDiff = Math.floor(hoursDiff / 24);
+
+    if (daysDiff > 0) {
+        return `${daysDiff} day${daysDiff !== 1 ? 's' : ''} `;
+    } else if (hoursDiff > 0) {
+        return `${hoursDiff} hour${hoursDiff !== 1 ? 's' : ''} `;
+    } else if (minutesDiff > 0) {
+        return `${minutesDiff} minute${minutesDiff !== 1 ? 's' : ''} `;
+    } else {
+        return `${secondsDiff} second${secondsDiff !== 1 ? 's' : ''} `;
+    }
+};
+
   const handleStatus = (status: string) => {
     setStatus(status);
     // displayData(status) //no need to write displayData here

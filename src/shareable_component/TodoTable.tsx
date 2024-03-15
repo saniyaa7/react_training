@@ -166,7 +166,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     const timeDiff = dueDateObj.getTime() - currentDate.getTime();
 
     if (timeDiff < 0) {
-        return "Expired";
+      return "Expired";
     }
 
     const secondsDiff = Math.floor(timeDiff / 1000);
@@ -175,15 +175,15 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     const daysDiff = Math.floor(hoursDiff / 24);
 
     if (daysDiff > 0) {
-        return `${daysDiff} day${daysDiff !== 1 ? 's' : ''} `;
+      return `${daysDiff} day${daysDiff !== 1 ? "s" : ""} `;
     } else if (hoursDiff > 0) {
-        return `${hoursDiff} hour${hoursDiff !== 1 ? 's' : ''} `;
+      return `${hoursDiff} hour${hoursDiff !== 1 ? "s" : ""} `;
     } else if (minutesDiff > 0) {
-        return `${minutesDiff} minute${minutesDiff !== 1 ? 's' : ''} `;
+      return `${minutesDiff} minute${minutesDiff !== 1 ? "s" : ""} `;
     } else {
-        return `${secondsDiff} second${secondsDiff !== 1 ? 's' : ''} `;
+      return `${secondsDiff} second${secondsDiff !== 1 ? "s" : ""} `;
     }
-};
+  };
 
   const handleStatus = (status: string) => {
     setStatus(status);

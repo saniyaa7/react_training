@@ -3,9 +3,10 @@ import { ITodo } from "../component/Home";
 import axios from "axios";
 import { API_ENDPOINT } from "../constants";
 
-interface GetTodoRequest {
+export interface GetTodoRequest {
   _page: number;
   _limit: number;
+  title_like:string
 }
 
 interface PatchTodoRequest {

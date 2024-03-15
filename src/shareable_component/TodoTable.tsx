@@ -1,5 +1,5 @@
 // TodoTable.js
-import React, { useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import {
   Button,
   FormControl,
@@ -7,6 +7,7 @@ import {
   Table,
   Row,
   Col,
+  Form
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ITodo } from "../component/Home";
@@ -14,11 +15,17 @@ import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { useFetch, useDeleteTodo, usePatchCheckTodo } from "../Hook/todo.hook";
+import { useFetch, useDeleteTodo, usePatchCheckTodo, GetTodoRequest } from "../Hook/todo.hook";
 
 interface TodoTableProps {
   showButton: boolean;
   completeTask: boolean;
+}
+
+const initialSearchParams = {
+  _page: 1,
+    _limit: 5,
+    title_like:""
 }
 
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
@@ -27,13 +34,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [search, setSearch] = useState<string>("");
   const [toggle, setToggle] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(5);
-  const [totalpages, setTotalPages] = useState(2);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [searchParams,setSearchParams] = useState<GetTodoRequest>(initialSearchParams)
 
-  const { data, error, isLoading, refetch } = useFetch(completeTask, {
-    _page: page,
-    _limit: limit,
-  });
+  const { data, error, isLoading, refetch } = useFetch(completeTask, searchParams);
 
   const { deleteTodo, isdeleteSuccess } = useDeleteTodo();
   const { patchCheckTodo, isPatchSuccess } = usePatchCheckTodo();
@@ -41,9 +45,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   useEffect(() => {
     if (data) {
       setTodos(data.data);
-      setTotalPages(Math.ceil(data.headers["x-total-count"] / limit));
+      console.log(data.headers)
+      setTotalPages(Math.ceil(data.headers["x-total-count"] / 5));
     }
-  }, [data, limit]);
+  }, [data, 5]);
 
   useEffect(() => {
     if (data) {
@@ -70,25 +75,25 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     patchCheckTodo({ id, checked });
   };
 
-  const currentDate = new Date();
-  let expiredTodos = todos.filter((todo) => {
-    const dueDate = new Date(todo.dueDate);
-    return (
-      !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime()
-    );
-  });
+  // const currentDate = new Date();
+  // let expiredTodos = todos.filter((todo) => {
+  //   const dueDate = new Date(todo.dueDate);
+  //   return (
+  //     !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime()
+  //   );
+  // });
 
   const filterTask =
     status === "all"
-      ? expiredTodos
-      : expiredTodos.filter(
+      ? todos
+      : todos.filter(
           (todo: ITodo) => String(todo.isComplete) === status
         );
-  const serachFilter = filterTask.filter((item) => {
-    return search.toLocaleLowerCase() === ""
-      ? item
-      : item.title.toLocaleLowerCase().includes(search);
-  });
+  // const searchFilter = filterTask.filter((item) => {
+  //   return search.toLocaleLowerCase() === ""
+  //     ? item
+  //     : item.title.toLocaleLowerCase().includes(search);
+  // });
 
   const handleSort = (direction: string) => () => {
     if (direction === "ascending")
@@ -98,101 +103,112 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
 
   const handlePageChange = (page: number) => {
     setPage(page);
-    // refetchTodos()
+    setSearchParams(prevState => ({...prevState,_page:page}))
+
   };
 
   const displayData = (status: string) => (
-    <Table striped bordered hover className="todo-table text-center">
-      <thead>
-        <tr>
-          <th>Number</th>
-          <th>Title</th>
-          <th>Due</th>
-          {showButton && (
-            <>
-              <th style={{ width: "15%" }}>Action</th>
-              <th style={{ width: "25%" }}>Status</th>
-            </>
-          )}
-        </tr>
-      </thead>
-      <tbody>
-        {serachFilter.map((todo, index) => (
-          <tr key={todo.id}>
-            <>
-              <td style={{ width: "5%" }}>{index + 1}</td>
-              <td>
-                <Link to={`/todo-add/${todo.id}`} className="todo-link">
-                  {todo.title}
-                </Link>
-              </td>
-              <td>{calculateDueTimeRemaining(todo.dueDate)}</td>
-              {showButton && (
-                <>
-                  <td>
-                    <Button
-                      variant="danger"
-                      size="sm"
-                      onClick={() => deleteTodoFun(todo.id)}
-                    >
-                      DELETE
-                    </Button>
-                  </td>
-                  <td>
-                    <Button
-                      size="sm"
-                      onClick={() => {
-                        setToggle(!toggle);
-                        handleCheck(todo.id, toggle);
-                      }}
-                      variant={todo.isComplete ? "secondary" : "success"}
-                    >
-                      {todo.isComplete
-                        ? "MARK AS INCOMPLETE"
-                        : "MARK AS COMPLETE"}
-                    </Button>
-                  </td>
-                </>
-              )}
-            </>
-          </tr>
-        ))}
-      </tbody>
-    </Table>
+    <>
+      {Boolean(filterTask.length) ? (
+        <div>
+          <Table striped bordered hover className="todo-table text-center">
+            <thead>
+              <tr>
+                <th>Number</th>
+                <th>Title</th>
+                <th>Due Date</th>
+                {showButton && (
+                  <>
+                    <th style={{ width: "15%" }}>Action</th>
+                    <th style={{ width: "25%" }}>Status</th>
+                  </>
+                )}
+              </tr>
+            </thead>
+            <tbody>
+              {filterTask.map((todo, index) => (
+                <tr key={todo.id}>
+                  <>
+                    <td style={{ width: "5%" }}>{index + 1}</td>
+                    <td>
+                      <Link to={`/todo-add/${todo.id}`} className="todo-link">
+                        {todo.title}
+                      </Link>
+                    </td>
+                    <td>{todo.dueDate}</td>
+                    {showButton && (
+                      <>
+                        <td>
+                          <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={() => deleteTodoFun(todo.id)}
+                          >
+                            DELETE
+                          </Button>
+                        </td>
+                        <td>
+                          <Button
+                            size="sm"
+                            onClick={() => {
+                              setToggle(!toggle);
+                              handleCheck(todo.id, toggle);
+                            }}
+                            variant={todo.isComplete ? "secondary" : "success"}
+                          >
+                            {todo.isComplete
+                              ? "MARK AS INCOMPLETE"
+                              : "MARK AS COMPLETE"}
+                          </Button>
+                        </td>
+                      </>
+                    )}
+                  </>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+
+          <div>
+            <button
+              className="btn btn-primary"
+              onClick={() => handlePageChange(page - 1)}
+              disabled={page === 1}
+            >
+              Previous
+            </button>
+            {page}/{totalPages}
+            <button
+              className="btn btn-primary ms-2"
+              onClick={() => handlePageChange(page + 1)}
+              disabled={page >= totalPages}
+            >
+              Next
+            </button>
+            <br />
+          </div>
+        </div>
+      ) : (
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+          <h5>No data available.</h5>
+        </div>
+      )}
+    </>
   );
-  const calculateDueTimeRemaining = (dueDate: string): string => {
-    const currentDate = new Date();
-    const dueDateObj = new Date(dueDate);
-    const timeDiff = dueDateObj.getTime() - currentDate.getTime();
-
-    if (timeDiff < 0) {
-      return "Expired";
-    }
-
-    const secondsDiff = Math.floor(timeDiff / 1000);
-    const minutesDiff = Math.floor(secondsDiff / 60);
-    const hoursDiff = Math.floor(minutesDiff / 60);
-    const daysDiff = Math.floor(hoursDiff / 24);
-
-    if (daysDiff > 0) {
-      return `${daysDiff} day${daysDiff !== 1 ? "s" : ""} `;
-    } else if (hoursDiff > 0) {
-      return `${hoursDiff} hour${hoursDiff !== 1 ? "s" : ""} `;
-    } else if (minutesDiff > 0) {
-      return `${minutesDiff} minute${minutesDiff !== 1 ? "s" : ""} `;
-    } else {
-      return `${secondsDiff} second${secondsDiff !== 1 ? "s" : ""} `;
-    }
-  };
 
   const handleStatus = (status: string) => {
     setStatus(status);
-    // displayData(status) //no need to write displayData here
   };
+
+  const handleSearchSubmit = (e:ChangeEvent<HTMLFormElement>) =>{
+    e.preventDefault()
+    setSearchParams(prevState => ({...prevState,title_like:search}))
+  }
 
   return (
     <>
       <div className="search-bar">
+      <Form onSubmit={handleSearchSubmit}>
         <Row>
           <Col xs={12} md={6}>
             <InputGroup className="mb-3">
@@ -202,8 +218,9 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                 className="custom-search-bar"
               />
             </InputGroup>
+
           </Col>
-          <Col xs={12} md={3}>
+          <Col xs={12} md={2}>
             <DropdownButton id="status-dropdown" title="Status">
               <Dropdown.Item onClick={() => handleStatus("all")}>
                 ALL
@@ -216,7 +233,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
               </Dropdown.Item>
             </DropdownButton>
           </Col>
-          <Col xs={12} md={3}>
+          <Col xs={12} md={2}>
             <DropdownButton id="sort-dropdown" title="Sort">
               <Dropdown.Item onClick={handleSort("ascending")}>
                 ASCENDING
@@ -226,38 +243,13 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
               </Dropdown.Item>
             </DropdownButton>
           </Col>
+          <Col xs={12} md={2}>
+            <Button type="submit">Search</Button>
+          </Col>
         </Row>
+        </Form>
       </div>
       {displayData(status)}
-      <div>
-        <input
-          className="mt-3 w-20"
-          type="number"
-          placeholder="set limit"
-          value={limit}
-          onChange={(e) => {
-            setLimit(parseInt(e.target.value));
-            setPage(1);
-          }}
-          style={{ marginRight: "100px" }}
-        />
-        <button
-          className="btn btn-primary"
-          onClick={() => handlePageChange(page - 1)}
-          disabled={page === 1}
-        >
-          Previous
-        </button>
-        {page}/{totalpages}
-        <button
-          className="btn btn-primary ms-2"
-          onClick={() => handlePageChange(page + 1)}
-          disabled={page >= totalpages}
-        >
-          Next
-        </button>
-        <br />
-      </div>
     </>
   );
 }

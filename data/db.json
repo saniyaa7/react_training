@@ -1,94 +1,59 @@
 {
   "todos": [
     {
-      "id": "3f97424c-4197-4a79-bfad-69a358273431",
-      "content": "sad",
-      "title": "React",
-      "dueDate": "2024-04-03",
+      "id": "24e62aab-6518-48a2-83ba-e0aeb0073cfd",
+      "content": "new",
+      "title": "Todo",
+      "dueDate": "2024-03-15",
       "isComplete": false
     },
     {
-      "id": "67840c65-934d-4469-8661-3f15b26d3349",
-      "content": "sadf",
-      "title": "Network",
-      "dueDate": "2024-04-05",
-      "isComplete": false
+      "id": "b343555b-247c-43f3-b2c8-0222e0b4a7a6",
+      "content": "New",
+      "title": "New",
+      "dueDate": "2024-03-15",
+      "isComplete": true
     },
     {
-      "id": "0de7aefe-4e2a-4d37-80ec-2add754f9211",
-      "content": "sdfsd",
-      "title": "HTML",
-      "dueDate": "2024-03-29",
-      "isComplete": false
-    },
-    {
-      "id": "b3216583-eaf0-4d51-835a-315666494c61",
-      "content": "wre",
-      "title": "Data structure",
-      "dueDate": "2024-04-05",
-      "isComplete": false
-    },
-    {
-      "id": "69cd179e-916c-482a-90db-230dac188185",
-      "content": "sad",
-      "title": "time pass",
-      "dueDate": "2024-03-29",
-      "isComplete": false
-    },
-    {
-      "id": "e785ff37-4569-4dba-a4ad-0f392d765593",
-      "content": "aax",
-      "title": "xyz",
-      "dueDate": "2024-03-30",
-      "isComplete": false
-    },
-    {
-      "id": "2dfde615-c062-48e5-93b4-5e1ff97374ae",
-      "content": "xz",
-      "title": "abc",
-      "dueDate": "2024-03-30",
-      "isComplete": false
-    },
-    {
-      "id": "23496838-3f24-4a99-8bb5-9c51757f9771",
-      "content": "azx",
-      "title": "databse",
-      "dueDate": "2024-03-29",
-      "isComplete": false
-    },
-    {
-      "id": "0593f627-f62e-4e16-b690-fa7a5d2671dc",
+      "id": "2369db04-aaee-4643-a1fe-b1840fca4ad1",
       "content": "zxc",
-      "title": "DBMS",
+      "title": "zxc",
       "dueDate": "2024-03-29",
       "isComplete": false
     },
     {
-      "id": "78a074bd-6cc0-4519-b8e5-c4689e0c8594",
-      "content": "za",
-      "title": "OOPS",
-      "dueDate": "2024-03-23",
+      "id": "947503b1-92fb-4022-b658-e604655a7b70",
+      "content": "zX",
+      "title": "ZXcZ",
+      "dueDate": "2024-04-05",
       "isComplete": false
     },
     {
-      "id": "70d22836-d5af-4ced-9952-3644a8ba2201",
-      "content": "sdc",
-      "title": "uuu",
-      "dueDate": "2024-04-04",
+      "id": "a598d902-b584-4319-9339-e3ff685d79f7",
+      "content": "xcz",
+      "title": "Zcx",
+      "dueDate": "2024-03-16",
       "isComplete": false
     },
     {
-      "id": "ada63ce9-fa59-47cf-b0e4-0ec2ec86e0fb",
-      "content": "sad",
-      "title": "query",
+      "id": "d7d784cb-a4d1-4b90-b0a2-7199272e157d",
+      "content": "ret",
+      "title": "wer",
       "dueDate": "2024-03-30",
       "isComplete": false
     },
     {
-      "id": "f6edb759-699a-4fb2-af67-f78cd3e0ea4f",
-      "content": "sdaf",
-      "title": "learn Javscript",
-      "dueDate": "2024-03-30",
+      "id": "43160861-b5d6-45a3-96ca-72355b55c1a5",
+      "content": "df",
+      "title": "fdf",
+      "dueDate": "2024-03-22",
+      "isComplete": false
+    },
+    {
+      "id": "fc0d82ea-99f7-44ad-8b15-bc0a672b3ae5",
+      "content": "Content",
+      "title": "New Todo",
+      "dueDate": "2024-03-15",
       "isComplete": false
     }
   ]

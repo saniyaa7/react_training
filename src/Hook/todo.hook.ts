@@ -4,43 +4,49 @@ import axios from "axios";
 import { API_ENDPOINT } from "../constants";
 
 export interface GetTodoRequest {
+  isComplete?: boolean;
   _page: number;
   _limit: number;
-  title_like:string
+  title_like: string;
 }
 
 interface PatchTodoRequest {
   id: string;
   checked: boolean;
 }
+const api_url = `${API_ENDPOINT}todos`;
 
-export const useFetch = (completeTask: boolean, params: GetTodoRequest) => {
-  let api_url = API_ENDPOINT + "todos";
-  if (completeTask) api_url += "?isComplete=true";
-
+export const useFetch = (params: GetTodoRequest) => {
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["todos", params],
     queryFn: async () =>
       await axios.get<ITodo[]>(api_url, { params }).then((res) => res),
   });
-
   return { data, error, isLoading, refetch };
+};
+
+export const useFetchById = (id: string) => {
+  const { data } = useQuery({
+    queryKey: ["todos"],
+    queryFn: async () => await axios.get(`${api_url}/${id}`).then((res) => res),
+  });
+  return { data };
 };
 
 export const AddTodoMutation = () => {
   return useMutation({
     mutationKey: ["todos"],
     mutationFn: async (payload: any) => {
-      const { data } = await axios.post(`${API_ENDPOINT}todos`, payload); // Remove the wrapping object
-      return data;
+      await axios.post(api_url, payload);
     },
   });
 };
 
 export const useDeleteTodo = () => {
   const { mutate, isSuccess, isPending } = useMutation({
+    mutationKey: ["todos"],
     mutationFn: (id: string) => {
-      return axios.delete(`${API_ENDPOINT}todos/${id}`);
+      return axios.delete(`${api_url}/${id}`);
     },
   });
   return {
@@ -51,10 +57,9 @@ export const useDeleteTodo = () => {
 };
 
 export const usePatchCheckTodo = () => {
-  // const queryClient = useQueryClient()
   const { mutate, isSuccess, isPending } = useMutation({
     mutationFn: ({ id, checked }: PatchTodoRequest) => {
-      return axios.patch(`${API_ENDPOINT}todos/${id}`, { isComplete: checked });
+      return axios.patch(`${api_url}/${id}`, { isComplete: checked });
     },
     onSuccess: () => {
       // queryClient.invalidateQueries({ queryKey: ['todos'] })

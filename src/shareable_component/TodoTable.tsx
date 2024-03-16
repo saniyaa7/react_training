@@ -7,7 +7,7 @@ import {
   Table,
   Row,
   Col,
-  Form
+  Form,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import { ITodo } from "../component/Home";
@@ -15,7 +15,12 @@ import "./TodoTable.css";
 import { API_ENDPOINT } from "../constants";
 import Dropdown from "react-bootstrap/Dropdown";
 import DropdownButton from "react-bootstrap/DropdownButton";
-import { useFetch, useDeleteTodo, usePatchCheckTodo, GetTodoRequest } from "../Hook/todo.hook";
+import {
+  useFetch,
+  useDeleteTodo,
+  usePatchCheckTodo,
+  GetTodoRequest,
+} from "../Hook/todo.hook";
 
 interface TodoTableProps {
   showButton: boolean;
@@ -24,9 +29,9 @@ interface TodoTableProps {
 
 const initialSearchParams = {
   _page: 1,
-    _limit: 5,
-    title_like:""
-}
+  _limit: 5,
+  title_like: "",
+};
 
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [todos, setTodos] = useState<ITodo[]>([]);
@@ -35,26 +40,23 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   const [toggle, setToggle] = useState<boolean>(false);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [searchParams,setSearchParams] = useState<GetTodoRequest>(initialSearchParams)
-
-  const { data, error, isLoading, refetch } = useFetch(completeTask, searchParams);
-
+  const [searchParams, setSearchParams] =
+    useState<GetTodoRequest>(initialSearchParams);
+  const { data, error, isLoading, refetch } = useFetch(searchParams);
   const { deleteTodo, isdeleteSuccess } = useDeleteTodo();
   const { patchCheckTodo, isPatchSuccess } = usePatchCheckTodo();
 
   useEffect(() => {
     if (data) {
       setTodos(data.data);
-      console.log(data.headers)
       setTotalPages(Math.ceil(data.headers["x-total-count"] / 5));
     }
+    if (completeTask)
+      setSearchParams((prevState) => ({
+        ...prevState,
+        isComplete: completeTask,
+      }));
   }, [data, 5]);
-
-  useEffect(() => {
-    if (data) {
-      setTodos(data.data);
-    }
-  }, [data]);
 
   useEffect(() => {
     if (isPatchSuccess || isdeleteSuccess) {
@@ -75,25 +77,10 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     patchCheckTodo({ id, checked });
   };
 
-  // const currentDate = new Date();
-  // let expiredTodos = todos.filter((todo) => {
-  //   const dueDate = new Date(todo.dueDate);
-  //   return (
-  //     !isNaN(dueDate.getTime()) && dueDate.getTime() >= currentDate.getTime()
-  //   );
-  // });
-
   const filterTask =
     status === "all"
       ? todos
-      : todos.filter(
-          (todo: ITodo) => String(todo.isComplete) === status
-        );
-  // const searchFilter = filterTask.filter((item) => {
-  //   return search.toLocaleLowerCase() === ""
-  //     ? item
-  //     : item.title.toLocaleLowerCase().includes(search);
-  // });
+      : todos.filter((todo: ITodo) => String(todo.isComplete) === status);
 
   const handleSort = (direction: string) => () => {
     if (direction === "ascending")
@@ -103,8 +90,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
 
   const handlePageChange = (page: number) => {
     setPage(page);
-    setSearchParams(prevState => ({...prevState,_page:page}))
-
+    setSearchParams((prevState) => ({ ...prevState, _page: page }));
   };
 
   const displayData = (status: string) => (
@@ -189,7 +175,14 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
           </div>
         </div>
       ) : (
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "50vh" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: "50vh",
+          }}
+        >
           <h5>No data available.</h5>
         </div>
       )}
@@ -200,53 +193,52 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
     setStatus(status);
   };
 
-  const handleSearchSubmit = (e:ChangeEvent<HTMLFormElement>) =>{
-    e.preventDefault()
-    setSearchParams(prevState => ({...prevState,title_like:search}))
-  }
+  const handleSearchSubmit = (e: ChangeEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setSearchParams((prevState) => ({ ...prevState, title_like: search }));
+  };
 
   return (
     <>
       <div className="search-bar">
-      <Form onSubmit={handleSearchSubmit}>
-        <Row>
-          <Col xs={12} md={6}>
-            <InputGroup className="mb-3">
-              <FormControl
-                placeholder="Search list"
-                onChange={(e) => setSearch(e.target.value)}
-                className="custom-search-bar"
-              />
-            </InputGroup>
-
-          </Col>
-          <Col xs={12} md={2}>
-            <DropdownButton id="status-dropdown" title="Status">
-              <Dropdown.Item onClick={() => handleStatus("all")}>
-                ALL
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatus("true")}>
-                COMPLETED
-              </Dropdown.Item>
-              <Dropdown.Item onClick={() => handleStatus("false")}>
-                INCOMPLETED
-              </Dropdown.Item>
-            </DropdownButton>
-          </Col>
-          <Col xs={12} md={2}>
-            <DropdownButton id="sort-dropdown" title="Sort">
-              <Dropdown.Item onClick={handleSort("ascending")}>
-                ASCENDING
-              </Dropdown.Item>
-              <Dropdown.Item onClick={handleSort("descending")}>
-                DESCENDING
-              </Dropdown.Item>
-            </DropdownButton>
-          </Col>
-          <Col xs={12} md={2}>
-            <Button type="submit">Search</Button>
-          </Col>
-        </Row>
+        <Form onSubmit={handleSearchSubmit}>
+          <Row>
+            <Col xs={12} md={6}>
+              <InputGroup className="mb-3">
+                <FormControl
+                  placeholder="Search list"
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="custom-search-bar"
+                />
+              </InputGroup>
+            </Col>
+            <Col xs={12} md={2}>
+              <DropdownButton id="status-dropdown" title="Status">
+                <Dropdown.Item onClick={() => handleStatus("all")}>
+                  ALL
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => handleStatus("true")}>
+                  COMPLETED
+                </Dropdown.Item>
+                <Dropdown.Item onClick={() => handleStatus("false")}>
+                  INCOMPLETED
+                </Dropdown.Item>
+              </DropdownButton>
+            </Col>
+            <Col xs={12} md={2}>
+              <DropdownButton id="sort-dropdown" title="Sort">
+                <Dropdown.Item onClick={handleSort("ascending")}>
+                  ASCENDING
+                </Dropdown.Item>
+                <Dropdown.Item onClick={handleSort("descending")}>
+                  DESCENDING
+                </Dropdown.Item>
+              </DropdownButton>
+            </Col>
+            <Col xs={12} md={2}>
+              <Button type="submit">Search</Button>
+            </Col>
+          </Row>
         </Form>
       </div>
       {displayData(status)}

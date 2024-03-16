@@ -3,8 +3,12 @@ import { Container, Row, Col, Badge } from "react-bootstrap";
 import { Link, useParams } from "react-router-dom";
 import { ITodo } from "../component/Home";
 import { API_ENDPOINT } from "../constants";
+import { useFetchById } from "../Hook/todo.hook";
 
 function DisplayTodo() {
+  const { id } = useParams<{ id: string }>();
+  const { data } = useFetchById(id || "");
+
   const initialValue = {
     id: "",
     title: "",
@@ -13,21 +17,19 @@ function DisplayTodo() {
     isComplete: false,
   };
   const [todo, setTodo] = useState<ITodo>(initialValue);
-  const { id } = useParams();
 
   useEffect(() => {
-    fetch(`${API_ENDPOINT}todos/${id}`)
-      .then((res) => res.json())
-      .then((data) => setTodo(data));
-  }, [id]);
+    if (data) {
+      setTodo(data.data);
+    }
+  }, [data]);
 
   return (
-    <div className="App ">
-      <Container className="mt-4 ">
+    <div className="App">
+      <Container className="mt-4">
         <Row className="d-flex justify-content-left align-items-left">
           <Col>
             <>
-              {/* Apply inline styles to make the title bigger and centered horizontally */}
               <h4 style={{ fontSize: "28px", marginBottom: "20px" }}>
                 Title: {todo.title}
               </h4>
@@ -51,4 +53,5 @@ function DisplayTodo() {
     </div>
   );
 }
+
 export default DisplayTodo;

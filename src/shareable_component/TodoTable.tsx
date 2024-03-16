@@ -1,5 +1,5 @@
 // TodoTable.js
-import React, { ChangeEvent, useEffect, useState } from "react";
+import React, { ChangeEvent, useEffect, useReducer, useState } from "react";
 import {
   Button,
   FormControl,
@@ -26,6 +26,15 @@ interface TodoTableProps {
   showButton: boolean;
   completeTask: boolean;
 }
+interface State {
+  todos: ITodo[];
+  status: string;
+  search: string;
+  toggle: boolean;
+  page: number;
+  totalPages: number;
+  searchParams: GetTodoRequest;
+}
 
 const initialSearchParams = {
   _page: 1,
@@ -33,29 +42,67 @@ const initialSearchParams = {
   title_like: "",
 };
 
+type Action =
+  | { type: "SET_TODOS"; payload: ITodo[] }
+  | { type: "SET_STATUS"; payload: string }
+  | { type: "SET_SEARCH"; payload: string }
+  | { type: "SET_TOGGLE"; payload: boolean }
+  | { type: "SET_PAGE"; payload: number }
+  | { type: "SET_TOTAL_PAGES"; payload: number }
+  | { type: "SET_SEARCH_PARAMS"; payload: GetTodoRequest };
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case "SET_TODOS":
+      return { ...state, todos: action.payload };
+    case "SET_STATUS":
+      return { ...state, status: action.payload };
+    case "SET_SEARCH":
+      return { ...state, search: action.payload };
+    case "SET_TOGGLE":
+      return { ...state, toggle: action.payload };
+    case "SET_PAGE":
+      return { ...state, page: action.payload };
+    case "SET_TOTAL_PAGES":
+      return { ...state, totalPages: action.payload };
+    case "SET_SEARCH_PARAMS":
+      return { ...state, searchParams: action.payload };
+    default:
+      return state;
+  }
+};
+
 function TodoTable({ showButton, completeTask }: TodoTableProps) {
-  const [todos, setTodos] = useState<ITodo[]>([]);
-  const [status, setStatus] = useState<string>("all");
-  const [search, setSearch] = useState<string>("");
-  const [toggle, setToggle] = useState<boolean>(false);
-  const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
-  const [searchParams, setSearchParams] =
-    useState<GetTodoRequest>(initialSearchParams);
-  const { data, error, isLoading, refetch } = useFetch(searchParams);
+  const initialState = {
+    todos: [],
+    status: "all",
+    search: "",
+    toggle: false,
+    page: 1,
+    totalPages: 1,
+    searchParams: initialSearchParams,
+  };
+
   const { deleteTodo, isdeleteSuccess } = useDeleteTodo();
   const { patchCheckTodo, isPatchSuccess } = usePatchCheckTodo();
+  const [state, dispatch] = useReducer(reducer, initialState);
+  const { todos, status, search, toggle, page, totalPages, searchParams } =
+    state;
+  const { data, error, isLoading, refetch } = useFetch(searchParams);
 
   useEffect(() => {
     if (data) {
-      setTodos(data.data);
-      setTotalPages(Math.ceil(data.headers["x-total-count"] / 5));
+      dispatch({ type: "SET_TODOS", payload: data.data });
+      dispatch({
+        type: "SET_TOTAL_PAGES",
+        payload: Math.ceil(data.headers["x-total-count"] / 5),
+      });
     }
     if (completeTask)
-      setSearchParams((prevState) => ({
-        ...prevState,
-        isComplete: completeTask,
-      }));
+      dispatch({
+        type: "SET_SEARCH_PARAMS",
+        payload: { ...searchParams, isComplete: completeTask },
+      });
   }, [data, 5]);
 
   useEffect(() => {
@@ -84,15 +131,25 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
 
   const handleSort = (direction: string) => () => {
     if (direction === "ascending")
-      setTodos([...todos].sort((a, b) => a.title.localeCompare(b.title)));
-    else setTodos([...todos].sort((a, b) => b.title.localeCompare(a.title)));
+      dispatch({
+        type: "SET_TODOS",
+        payload: [...todos].sort((a, b) => a.title.localeCompare(b.title)),
+      });
+    else
+      dispatch({
+        type: "SET_TODOS",
+        payload: [...todos].sort((a, b) => b.title.localeCompare(a.title)),
+      });
   };
 
   const handlePageChange = (page: number) => {
-    setPage(page);
-    setSearchParams((prevState) => ({ ...prevState, _page: page }));
+    dispatch({ type: "SET_PAGE", payload: page });
+    dispatch({
+      type: "SET_SEARCH_PARAMS",
+      payload: { ...searchParams, _page: page },
+    });
   };
-
+  console.log(todos);
   const displayData = (status: string) => (
     <>
       {Boolean(filterTask.length) ? (
@@ -121,7 +178,7 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                         {todo.title}
                       </Link>
                     </td>
-                    <td>{todo.dueDate}</td>
+                    <td style={{ width: "15%" }}>{todo.dueDate}</td>
                     {showButton && (
                       <>
                         <td>
@@ -137,10 +194,13 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                           <Button
                             size="sm"
                             onClick={() => {
-                              setToggle(!toggle);
+                              dispatch({
+                                type: "SET_TOGGLE",
+                                payload: !toggle,
+                              });
                               handleCheck(todo.id, toggle);
                             }}
-                            variant={todo.isComplete ? "secondary" : "success"}
+                            variant={todo.isComplete ? "success" : "secondary"}
                           >
                             {todo.isComplete
                               ? "MARK AS INCOMPLETE"
@@ -190,12 +250,15 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
   );
 
   const handleStatus = (status: string) => {
-    setStatus(status);
+    dispatch({ type: "SET_STATUS", payload: status });
   };
 
   const handleSearchSubmit = (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setSearchParams((prevState) => ({ ...prevState, title_like: search }));
+    dispatch({
+      type: "SET_SEARCH_PARAMS",
+      payload: { ...searchParams, title_like: search },
+    });
   };
 
   return (
@@ -207,10 +270,15 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
               <InputGroup className="mb-3">
                 <FormControl
                   placeholder="Search list"
-                  onChange={(e) => setSearch(e.target.value)}
+                  onChange={(e) =>
+                    dispatch({ type: "SET_SEARCH", payload: e.target.value })
+                  }
                   className="custom-search-bar"
                 />
               </InputGroup>
+            </Col>
+            <Col xs={12} md={2}>
+              <Button type="submit">Search</Button>
             </Col>
             <Col xs={12} md={2}>
               <DropdownButton id="status-dropdown" title="Status">
@@ -234,9 +302,6 @@ function TodoTable({ showButton, completeTask }: TodoTableProps) {
                   DESCENDING
                 </Dropdown.Item>
               </DropdownButton>
-            </Col>
-            <Col xs={12} md={2}>
-              <Button type="submit">Search</Button>
             </Col>
           </Row>
         </Form>

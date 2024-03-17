@@ -1,0 +1,41 @@
+/* TodoTable.css */
+
+.todo-table {
+  width: 60% !important;
+  margin: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.search-bar{
+  width: 60% !important;
+  margin: auto;
+  margin-top: 20px;
+
+
+}
+
+.todo-link {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.todo-link:hover {
+  text-decoration: underline;
+}
+
+.custom-search-bar {
+  width: 60% !important;
+}
+
+table,
+thead,
+tr,
+tbody,
+th,
+td {
+  text-align: center !important;
+}
